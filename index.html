@@ -440,8 +440,8 @@
             // Cargar efectores y zonas
             Promise.all([
                 
-                fetch("efectores.json"),           // 👈 en vez de "api/efectores" o "data/efectores.json"
-                fetch("zonas_valores.json")       // 👈 en vez de "/api/zonas-con-datos"
+                fetch("efectores.json").then(res => res.json()),           
+                fetch("zonas_valores.json").then(res => res.json())       // 👈 en vez de "/api/zonas-con-datos"
             ])
                 .then(([efectores, zonas]) => {
                     efectoresData = efectores.features;
