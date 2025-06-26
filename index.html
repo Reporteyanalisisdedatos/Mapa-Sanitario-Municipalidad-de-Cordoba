@@ -264,10 +264,10 @@
             <div id="header-title">Mapa Sanitario - Provincia de Córdoba</div>
             <div id="header-logos">
                 <div class="logo-container">
-                    <img src="SecreB.png" alt="Secretaría de Salud" />
+                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/SecreB.png" alt="Secretaría de Salud" />
                 </div>
                 <div class="logo-container">
-                    <img src="13 - HorizontalCTWhite.png" alt="Coordinación Tecnológica" />
+                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HorizontalCTWhite.png" alt="Coordinación Tecnológica" />
                 </div>
             </div>
         </div>
@@ -293,7 +293,7 @@
                 <label for="selZONA">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <div id="return-button" title="Volver a la vista general de Zonas" style="display: none; cursor: pointer;">
-                            <img src="atras.png" alt="Volver" style="width: 22px; height: 22px;" />
+                            <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/atras.png" alt="Volver" style="width: 22px; height: 22px;" />
                         </div>
                         <select id="selZONA">
                             <option value="">-- Seleccionar Zona --</option>
@@ -347,7 +347,7 @@
             const map = L.map('map').setView([-31.42, -64.18], 11);
 
             const iconoEfectores = L.icon({
-                iconUrl: 'EFECTORES.png',
+                iconUrl:'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/EFECTORES.png',
                 iconSize: [36, 36],
                 iconAnchor: [18, 36],
                 popupAnchor: [0, -36],
@@ -356,14 +356,14 @@
             
 
             const iconoHPA = L.icon({
-                iconUrl: 'HOSP-HPA-PLM.png',
+                iconUrl: 'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HOSP-HPA-PLM.png',
                 iconSize: [38, 38],
                 iconAnchor: [19, 38],
                 popupAnchor: [0, -38],
             });
 
             const iconoCentroSalud = L.icon({
-                iconUrl: 'CS.png', // Asegúrate de tener esta imagen en la misma carpeta
+                iconUrl: 'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/CS.png', // Asegúrate de tener esta imagen en la misma carpeta
                 iconSize: [35, 35],
                 iconAnchor: [15, 35],
                 popupAnchor: [0, -35],
@@ -467,8 +467,9 @@
                 'DEPARTAMENTOS',
                 'LOCALIDADES',
             ];
+            const urlBase = "https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/";
             archivosCapas.forEach((nombre) => {
-                fetch(`${nombre}.json`)
+                fetch(`${urlBase}${nombre}.json`)
                     .then((res) => {
                         if (!res.ok) {
                             throw new Error(`HTTP error! status: ${res.status} for ${nombre}.json`);
