@@ -438,31 +438,28 @@
             }
 
             // Cargar efectores y zonas
-            Promise.all([
-                
+           Promise.all([
                 fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json").then(res => res.json()),
-                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_valores.json").then(res => res.json())
-      // 👈 en vez de "/api/zonas-con-datos"
+                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_completas.json").then(res => res.json())
             ])
-                .then(([efectores, zonas]) => {
-                    efectoresData = efectores.features;
-                    allZonasFeatures = zonas.features; // Guardar todas las features de zonas
-                    allZonasDataLoaded = true; // Indicar que los datos de zonas están cargados
-                    
-                    console.log("✅ efectores cargados:", efectores.features.length); // 👈 AGREGÁ ESTA LÍNEA
+            .then(([efectores, zonas]) => {
+                efectoresData = efectores.features;
+                allZonasFeatures = zonas.features;
+                allZonasDataLoaded = true;
 
-                    poblarSelectorZonas(zonas.features); // Llenar el menú desplegable
-                    mostrarTodosEfectores(); // Mostrar todos los efectores al inicio
-                    
-                    // Asegurarse de que el selector de zona esté en el estado inicial "-- Seleccionar Zona --"
-                    selZONA.value = ""; 
-                    zonaInfoPanel.style.display = 'none';
-                    allZonesSummaryPanel.style.display = 'none';
-                    returnButton.style.display = 'none'; // Asegurarse de que esté oculto al inicio
-                })
-                .catch((error) => {
-                    console.error('Error cargando datos iniciales:', error);
-                });
+                console.log("✅ efectores cargados:", efectores.features.length);
+
+                poblarSelectorZonas(zonas.features);
+                mostrarTodosEfectores();
+
+                selZONA.value = ""; 
+                zonaInfoPanel.style.display = 'none';
+                allZonesSummaryPanel.style.display = 'none';
+                returnButton.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Error cargando datos iniciales:', error);
+            });
 
             const archivosCapas = [
                 'CIRCUITO',
