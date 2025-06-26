@@ -440,8 +440,9 @@
             // Cargar efectores y zonas
             Promise.all([
                 
-                fetch("efectores.json").then(res => res.json()),           
-                fetch("zonas_valores.json").then(res => res.json())       // 👈 en vez de "/api/zonas-con-datos"
+                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json").then(res => res.json()),
+                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_valores.json").then(res => res.json())
+      // 👈 en vez de "/api/zonas-con-datos"
             ])
                 .then(([efectores, zonas]) => {
                     efectoresData = efectores.features;
