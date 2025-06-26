@@ -268,7 +268,7 @@
                 </div>
                 <div class="logo-container">
                     
-                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/13%20-%20HorizontalCTWhite.png" alt="Coordinación Tecnológica" />
+                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HorizontalCTWhite.png" alt="Coordinación Tecnológica" alt="Coordinación Tecnológica" />
                 </div>
             </div>
         </div>
@@ -445,12 +445,12 @@
             ])
             .then(([efectores, zonas]) => {
                 efectoresData = efectores;
-                allZonasFeatures = zonas;
+                allZonasFeatures = zonas.features;
                 allZonasDataLoaded = true;
 
                 console.log("✅ efectores cargados:", efectores.length);
 
-                poblarSelectorZonas(zonas.features);
+                poblarSelectorZonas(allZonasFeatures);
                 mostrarTodosEfectores();
 
                 selZONA.value = ""; 
