@@ -440,26 +440,41 @@
 
             // Cargar efectores y zonas
            Promise.all([
-                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json").then(res => res.json()),
-                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_completas.json").then(res => res.json())
+                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json").then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                }),
+                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_valores.json").then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
             ])
             .then(([efectores, zonas]) => {
-                efectoresData = efectores;
-                allZonasFeatures = zonas.features;
-                allZonasDataLoaded = true;
-
-                console.log("✅ efectores cargados:", efectores.length);
-
+                // Verifica la estructura de los datos
+                if (!efectores || !efectores.features) {
+                    throw new Error("El archivo efectores.json no tiene la estructura esperada (FeatureCollection)");
+                }
+                if (!zonas || !zonas.features) {
+                    throw new Error("El archivo zonas_valores.json no tiene la estructura esperada (FeatureCollection)");
+                }
+                
+                efectoresData = Array.isArray(efectores.features) ? efectores.features : [];
+                allZonasFeatures = Array.isArray(zonas.features) ? zonas.features : [];
+                
+                console.log("✅ efectores cargados:", efectoresData.length);
+                console.log("Datos de efectores:", efectoresData); // Para depuración
+                
                 poblarSelectorZonas(allZonasFeatures);
                 mostrarTodosEfectores();
-
-                selZONA.value = ""; 
+                selZONA.value = "";
                 zonaInfoPanel.style.display = 'none';
                 allZonesSummaryPanel.style.display = 'none';
                 returnButton.style.display = 'none';
             })
-            .catch((error) => {
-                console.error('Error cargando datos iniciales:', error);
+            .catch(error => {
+                console.error("Error cargando datos iniciales:", error);
+                // Mostrar mensaje de error al usuario
+                alert("Error al cargar los datos del mapa. Por favor, recarga la página o inténtalo más tarde.");
             });
 
             const archivosCapas = [
