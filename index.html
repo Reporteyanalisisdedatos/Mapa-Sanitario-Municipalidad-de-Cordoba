@@ -475,6 +475,7 @@
                     efectoresData = efectores.features;
                     allZonasFeatures = zonasGeo.features;
                     datosZonasPoblacion = zonasValores;
+                    allZonasDataLoaded = true;
 
                     console.log("✅ efectores cargados:", efectoresData.length);
                     poblarSelectorZonas(allZonasFeatures);
@@ -792,14 +793,32 @@
                     map.removeLayer(capaEfectores);
                 }
 
-                const efectoresEnZona = efectoresData.filter((e) => {
+               const efectoresEnZona = efectoresData.filter((e) => {
                     try {
-                        return parseInt(e.properties?.zona) === zonaId;
+                        const props = e.properties;
+                        const nombre = (props?.centro || '').toLowerCase();
+                        const tipo = (props?.tipo || '').toLowerCase();
+                        const zonaMatch = parseInt(props?.zona) === zonaId;
+
+                        const esValido =
+                            tipo.includes('hospital') ||
+                            tipo.includes('hpa') ||
+                            nombre.includes('padre la monaca') ||
+                            nombre.includes('medicina preventiva') ||
+                            nombre.includes('dem') ||
+                            nombre.includes('secretaría de salud') ||
+                            nombre.includes('secretaria de salud') ||
+                            nombre.includes('adicciones') ||
+                            tipo.includes('salud mental') ||
+                            tipo.includes('pec');
+
+                        return zonaMatch && esValido;
                     } catch (error) {
                         console.error('Error al procesar zona del efector:', e, error);
                         return false;
                     }
                 });
+
 
                 capaEfectores = L.geoJSON(
                     {
