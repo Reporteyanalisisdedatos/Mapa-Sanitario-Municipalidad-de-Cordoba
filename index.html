@@ -367,9 +367,9 @@
 
             const iconoCentroSalud = L.icon({
                 iconUrl: 'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/CS.png', // Asegúrate de tener esta imagen en la misma carpeta
-                iconSize: [35, 35],
-                iconAnchor: [15, 35],
-                popupAnchor: [0, -35],
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+                popupAnchor: [0, -28],
             });
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -793,25 +793,10 @@
                     map.removeLayer(capaEfectores);
                 }
 
+                // ✅ Trae todos los efectores que pertenezcan a la zona (sin filtrar por tipo)
                 const efectoresFiltrados = efectoresData.filter(e => {
                     const props = e.properties;
-                    const zonaValida = parseInt(props.zona) === zonaId;
-                    const nombre = (props?.centro || '').toLowerCase();
-                    const tipo = (props?.tipo || '').toLowerCase();
-
-                    const mostrar =
-                        tipo.includes('hospital') ||
-                        tipo.includes('hpa') ||
-                        nombre.includes('padre la monaca') ||
-                        nombre.includes('medicina preventiva') ||
-                        nombre.includes('dem') ||
-                        nombre.includes('secretaría de salud') ||
-                        nombre.includes('secretaria de salud') ||
-                        nombre.includes('adicciones') ||
-                        tipo.includes('salud mental') ||
-                        tipo.includes('pec');
-
-                    return zonaValida && mostrar;
+                    return parseInt(props.zona) === zonaId;
                 });
 
                 capaEfectores = L.geoJSON(
@@ -883,6 +868,7 @@
                                     institucion: props.institucion,
                                     tipo: props.tipo,
                                     direccion: props.direccion,
+
                                     poblacion: infoZona?.PoblacionTotal ?? 0,
                                     mujeres: infoZona?.Mujeres ?? 0,
                                     hombres: infoZona?.Varones ?? 0,
@@ -899,6 +885,7 @@
                     }
                 ).addTo(map);
             }
+
 
 
             function mostrarZonaInfo(feature, id, layer) {
