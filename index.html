@@ -891,24 +891,27 @@
 
                 const p = feature.properties;
 
-                const poblacionFormatted = p.poblacion?.toLocaleString('es-AR') ?? 'S/D';
-                const mujeresFormatted = p.mujeres?.toLocaleString('es-AR') ?? 'S/D';
-                const varonesFormatted = p.varones?.toLocaleString('es-AR') ?? 'S/D';
-                const hogaresFormatted = p.hogares?.toLocaleString('es-AR') ?? 'S/D';
-                const hogaresNBIFormatted = p.hogares_nbi?.toLocaleString('es-AR') ?? 'S/D';
-                const coberturaFormatted = p.cobertura?.toLocaleString('es-AR') ?? 'S/D';
+                
 
+                const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === parseInt(id));
+
+                const poblacion = infoZona?.PoblacionTotal ?? 0;
+                const mujeres = infoZona?.Mujeres ?? 0;
+                const varones = infoZona?.Hombres ?? 0;
+                const hogares = infoZona?.Hogares ?? 0;
+                const hogaresNBI = infoZona?.HogaresNBI ?? 0;
+                const cobertura = infoZona?.["Pob. Cobertura Publica Exclusiva"] ?? 0;
 
                 const zonaInfoHtml = `
                     <div style="font-size: 28px; font-weight: bold; text-align: center; color: #005288; margin-bottom: 10px;">
-                        ${poblacionFormatted}
+                        ${poblacion.toLocaleString('es-AR')}
                     </div>
                     <div style="font-size: 14px; line-height: 1.5;">
-                        <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeresFormatted} <span style="color:gray">(${porcentaje(p.mujeres, p.poblacion)}%)</span></div>
-                        <div><b style="color:#3C5AB7;">Varones:</b> ${varonesFormatted} <span style="color:gray">(${porcentaje(p.varones, p.poblacion)}%)</span></div>
-                        <div><b>Hogares:</b> ${hogaresFormatted} <span style="color:gray">(${porcentaje(p.hogares, p.poblacion)}%)</span></div>
-                        <div><b>Hogares NBI:</b> ${hogaresNBIFormatted} <span style="color:gray">(${porcentaje(p.hogares_nbi, p.poblacion)}%)</span></div>
-                        <div><b>Pob. Cobertura Pública Excl:</b> ${coberturaFormatted} <span style="color:gray">(${porcentaje(p.cobertura, p.poblacion)}%)</span></div>
+                        <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeres.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(mujeres, poblacion)}%)</span></div>
+                        <div><b style="color:#3C5AB7;">Varones:</b> ${varones.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(varones, poblacion)}%)</span></div>
+                        <div><b>Hogares:</b> ${hogares.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogares, poblacion)}%)</span></div>
+                        <div><b>Hogares NBI:</b> ${hogaresNBI.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogaresNBI, poblacion)}%)</span></div>
+                        <div><b>Pob. Cobertura Pública Excl:</b> ${cobertura.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(cobertura, poblacion)}%)</span></div>
                     </div>
                 `;
 
