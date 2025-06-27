@@ -793,43 +793,36 @@
                     map.removeLayer(capaEfectores);
                 }
 
-               const efectoresEnZona = efectoresData.filter((e) => {
-                    try {
-                        const props = e.properties;
-                        const nombre = (props?.centro || '').toLowerCase();
-                        const tipo = (props?.tipo || '').toLowerCase();
-                        const zonaMatch = parseInt(props?.zona) === zonaId;
+                const efectoresFiltrados = efectoresData.filter(e => {
+                    const props = e.properties;
+                    const zonaValida = parseInt(props.zona) === zonaId;
+                    const nombre = (props?.centro || '').toLowerCase();
+                    const tipo = (props?.tipo || '').toLowerCase();
 
-                        const esValido =
-                            tipo.includes('hospital') ||
-                            tipo.includes('hpa') ||
-                            nombre.includes('padre la monaca') ||
-                            nombre.includes('medicina preventiva') ||
-                            nombre.includes('dem') ||
-                            nombre.includes('secretaría de salud') ||
-                            nombre.includes('secretaria de salud') ||
-                            nombre.includes('adicciones') ||
-                            tipo.includes('salud mental') ||
-                            tipo.includes('pec');
+                    const mostrar =
+                        tipo.includes('hospital') ||
+                        tipo.includes('hpa') ||
+                        nombre.includes('padre la monaca') ||
+                        nombre.includes('medicina preventiva') ||
+                        nombre.includes('dem') ||
+                        nombre.includes('secretaría de salud') ||
+                        nombre.includes('secretaria de salud') ||
+                        nombre.includes('adicciones') ||
+                        tipo.includes('salud mental') ||
+                        tipo.includes('pec');
 
-                        return zonaMatch && esValido;
-                    } catch (error) {
-                        console.error('Error al procesar zona del efector:', e, error);
-                        return false;
-                    }
+                    return zonaValida && mostrar;
                 });
-
 
                 capaEfectores = L.geoJSON(
                     {
                         type: 'FeatureCollection',
-                        features: efectoresEnZona,
+                        features: efectoresFiltrados,
                     },
                     {
                         pointToLayer: (feature, latlng) => {
                             const nombre = (feature.properties?.centro || '').toLowerCase();
                             const tipo = (feature.properties?.tipo || '').toLowerCase();
-
                             let icono = iconoCentroSalud;
 
                             if (
@@ -849,62 +842,60 @@
                             ) {
                                 icono = iconoEfectores;
                             }
-                            
+
                             return L.marker(latlng, { icon: icono });
                         },
                         onEachFeature: (feature, layer) => {
-                                const props = feature.properties;
-                                const nombre = (props.centro || '').toLowerCase();
+                            const props = feature.properties;
+                            const nombre = (props.centro || '').toLowerCase();
 
-                                if (
-                                    nombre.includes('salud mental') &&
-                                    nombre.includes('direccion')
-                                ) {
-                                    layer.bindPopup(`
-                                        <div style="font-family: sans-serif; min-width: 240px;">
-                                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                                Dirección de Salud Mental
-                                            </div>
-                                            <div style="font-size: 13px; line-height: 1.4; margin-bottom: 10px;">
-                                                <div><b>Institución:</b> Dirección de Salud Mental</div>
-                                                <div><b>Tipo:</b> Salud Mental</div>
-                                                <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                            </div>
-                                            <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;" />
-                                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                                Centro de Adicciones Lazos
-                                            </div>
-                                            <div style="font-size: 13px; line-height: 1.4;">
-                                                <div><b>Institución:</b> Centro de Adicciones Lazos</div>
-                                                <div><b>Tipo:</b> Adicciones</div>
-                                                <div><b>Dirección:</b> Mismo predio / entrada compartida</div>
-                                            </div>
+                            if (
+                                nombre.includes('salud mental') &&
+                                nombre.includes('direccion')
+                            ) {
+                                layer.bindPopup(`
+                                    <div style="font-family: sans-serif; min-width: 240px;">
+                                        <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                            Dirección de Salud Mental
                                         </div>
-                                    `);
-                                } else {
-                                    const zonaId = parseInt(props.zona);
-                                    const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === zonaId);
+                                        <div style="font-size: 13px; line-height: 1.4; margin-bottom: 10px;">
+                                            <div><b>Institución:</b> Dirección de Salud Mental</div>
+                                            <div><b>Tipo:</b> Salud Mental</div>
+                                            <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
+                                        </div>
+                                        <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;" />
+                                        <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                            Centro de Adicciones Lazos
+                                        </div>
+                                        <div style="font-size: 13px; line-height: 1.4;">
+                                            <div><b>Institución:</b> Centro de Adicciones Lazos</div>
+                                            <div><b>Tipo:</b> Adicciones</div>
+                                            <div><b>Dirección:</b> Mismo predio / entrada compartida</div>
+                                        </div>
+                                    </div>
+                                `);
+                            } else {
+                                const zonaId = parseInt(props.zona);
+                                const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === zonaId);
 
-                                    const datosCentro = {
-                                        nombre: props.centro || 'Centro de Salud',
-                                        institucion: props.institucion,
-                                        tipo: props.tipo,
-                                        direccion: props.direccion,
+                                const datosCentro = {
+                                    nombre: props.centro || 'Centro de Salud',
+                                    institucion: props.institucion,
+                                    tipo: props.tipo,
+                                    direccion: props.direccion,
+                                    poblacion: infoZona?.PoblacionTotal ?? 0,
+                                    mujeres: infoZona?.Mujeres ?? 0,
+                                    hombres: infoZona?.Varones ?? 0,
+                                    sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
+                                    porcentaje_sin_cobertura: porcentaje(infoZona?.PoblacionSinCobertura, infoZona?.PoblacionTotal),
+                                    hogares: infoZona?.Hogares ?? 0,
+                                    hogares_nbi: infoZona?.HogaresNBI ?? 0
+                                };
 
-                                        poblacion: infoZona?.PoblacionTotal ?? 0,
-                                        mujeres: infoZona?.Mujeres ?? 0,
-                                        hombres: infoZona?.Varones ?? 0,
-                                        sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                                        porcentaje_sin_cobertura: porcentaje(infoZona?.PoblacionSinCobertura, infoZona?.PoblacionTotal),
-                                        hogares: infoZona?.Hogares ?? 0,
-                                        hogares_nbi: infoZona?.HogaresNBI ?? 0
-                                    };
-
-                                    const popupContent = crearPopupCentroSalud(datosCentro);
-                                    layer.bindPopup(popupContent);
-                                }
+                                const popupContent = crearPopupCentroSalud(datosCentro);
+                                layer.bindPopup(popupContent);
                             }
-
+                        }
                     }
                 ).addTo(map);
             }
@@ -1023,37 +1014,35 @@
                 return ((parte / total) * 100).toFixed(2);
             }
 
-            function mostrarResumenTodasZonas() {
-                if (!allZonasDataLoaded) {
-                    console.warn('Datos de zonas no cargados para mostrar el resumen.');
+            function mostrarResumenTodasZonas() {            
+                if (!Array.isArray(datosZonasPoblacion) || datosZonasPoblacion.length === 0) {
+                    console.warn('❌ datosZonasPoblacion no cargado o vacío, no se puede mostrar el resumen.');
                     return;
                 }
 
-                allZonesList.innerHTML = ''; 
-
-                allZonesSummaryPanel.querySelector('h3').textContent = 'Población por Zona'; 
+                allZonesList.innerHTML = '';
+                allZonesSummaryPanel.querySelector('h3').textContent = 'Población por Zona';
                 totalCapitalPopulationDiv.style.display = 'none';
 
-                const sortedZonas = [...allZonasFeatures].sort((a, b) => {
-                    const idA = parseInt((a.properties.name || '').replace('ZONA ', '').trim());
-                    const idB = parseInt((b.properties.name || '').replace('ZONA ', '').trim());
-                    return idA - idB;
+                const zonasOrdenadas = [...datosZonasPoblacion].sort((a, b) => parseInt(a.Zona) - parseInt(b.Zona));
+
+                zonasOrdenadas.forEach(z => {
+                    const id = z.Zona;
+                    const poblacion = z.PoblacionTotal || 0;
+                    const poblacionFormatted = poblacion.toLocaleString('es-AR');
+
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span class="zone-name">ZONA ${id}:</span>
+                        <span class="zone-population">${poblacionFormatted}</span>
+                    `;
+                    allZonesList.appendChild(listItem);
                 });
 
-                sortedZonas.forEach(feature => {
-                    const id = (feature.properties.name || '').replace('ZONA ', '').trim();
-                    const poblacion = feature.properties.poblacion || 0;
-                    const poblacionFormatted = poblacion.toLocaleString('es-AR') ?? 'S/D';
-                    if (id) {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<span class="zone-name">ZONA ${id}:</span> <span class="zone-population">${poblacionFormatted}</span>`;
-                        allZonesList.appendChild(listItem);
-                    }
-                });
-
-                zonaInfoPanel.style.display = 'none'; 
-                allZonesSummaryPanel.style.display = 'flex'; 
+                zonaInfoPanel.style.display = 'none';
+                allZonesSummaryPanel.style.display = 'flex';
             }
+    
         });
     </script>
 </body>
