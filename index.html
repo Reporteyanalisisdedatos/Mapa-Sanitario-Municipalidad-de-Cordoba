@@ -343,6 +343,8 @@
         const allZonesSummaryPanel = document.getElementById('all-zones-summary-panel');
         const allZonesList = document.getElementById('all-zones-list');
         const totalCapitalPopulationDiv = document.getElementById('total-capital-population');
+        
+        let datosZonasPoblacion = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             const map = L.map('map').setView([-31.42, -64.18], 11);
@@ -457,9 +459,10 @@
                 if (!efectores || !efectores.features) {
                     throw new Error("El archivo efectores.json no tiene la estructura esperada (FeatureCollection)");
                 }
-                if (!zonas || !zonas.features) {
-                    throw new Error("El archivo zonas_valores.json no tiene la estructura esperada (FeatureCollection)");
+                if (!Array.isArray(zonas)) {
+                    throw new Error("zonas_valores.json no tiene el formato esperado (debe ser un array de zonas)");
                 }
+                datosZonasPoblacion = zonas;
                 
                 efectoresData = Array.isArray(efectores.features) ? efectores.features : [];
                 allZonasFeatures = Array.isArray(zonas.features) ? zonas.features : [];
