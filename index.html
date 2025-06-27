@@ -439,16 +439,19 @@
             }
 
             // Cargar efectores y zonas
-           Promise.all([
-                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json").then(res => {
-                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+           const fetchEfectores = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json")
+                .then(res => {
+                    if (!res.ok) throw new Error(`Error al cargar efectores.json: ${res.status}`);
                     return res.json();
-                }),
-                fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_valores.json").then(res => {
-                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                });
+
+            const fetchZonas = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_valores.json")
+                .then(res => {
+                    if (!res.ok) throw new Error(`Error al cargar zonas_valores.json: ${res.status}`);
                     return res.json();
-                })
-            ])
+                });
+
+            Promise.all([fetchEfectores, fetchZonas])
             .then(([efectores, zonas]) => {
                 // Verifica la estructura de los datos
                 if (!efectores || !efectores.features) {
@@ -474,7 +477,7 @@
             .catch(error => {
                 console.error("Error cargando datos iniciales:", error);
                 // Mostrar mensaje de error al usuario
-                alert("Error al cargar los datos del mapa. Por favor, recarga la página o inténtalo más tarde.");
+                alert(`Error al cargar datos: ${error.message}`);;
             });
 
             const archivosCapas = [
