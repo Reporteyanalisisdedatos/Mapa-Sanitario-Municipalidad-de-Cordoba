@@ -695,11 +695,25 @@
                     map.removeLayer(capaEfectores);
                 }
 
+                const tiposPermitidos = [
+                    'hospital municipal cordoba',
+                    'secretaría de salud',
+                    'secretaria de salud',
+                    'salud mental',
+                    'hospital pronta atención',
+                    'centro de salud',
+                    'servicio odontológico municipal',
+                    'medicina preventiva',
+                    'padre la monaca'
+                ];
+
+                const efectoresFiltrados = efectoresData.filter(e => {
+                    const tipo = (e.properties?.tipo || '').toLowerCase().trim();
+                    return tiposPermitidos.includes(tipo);
+                });
+
                 capaEfectores = L.geoJSON(
-                    {
-                        type: 'FeatureCollection',
-                        features: efectoresData,
-                    },
+                    { type: 'FeatureCollection', features: efectoresFiltrados },
                     {
                         pointToLayer: (feature, latlng) => {
                             const nombre = (feature.properties?.centro || '').toLowerCase();
@@ -785,9 +799,23 @@
                     map.removeLayer(capaEfectores);
                 }
 
+                const tiposPermitidos = [
+                    'hospital municipal cordoba',
+                    'secretaría de salud',
+                    'secretaria de salud',
+                    'salud mental',
+                    'hospital pronta atención',
+                    'centro de salud',
+                    'servicio odontológico municipal',
+                    'medicina preventiva',
+                    'padre la monaca'
+                ];
+
                 const efectoresFiltrados = efectoresData.filter((e) => {
                     try {
-                        return parseInt(e.properties?.zona) === zonaId;
+                        const tipo = (e.properties?.tipo || '').toLowerCase().trim();
+                        const zona = parseInt(e.properties?.zona);
+                        return zona === zonaId && tiposPermitidos.includes(tipo);
                     } catch (error) {
                         console.error('Error al procesar zona del efector:', e, error);
                         return false;
@@ -874,10 +902,6 @@
                     }
                 ).addTo(map);
             }
-
-
-
-
             function mostrarZonaInfo(feature, id, layer) {
                 if (!efectoresData) {
                     console.error('❌ efectoresData no está cargado todavía');
