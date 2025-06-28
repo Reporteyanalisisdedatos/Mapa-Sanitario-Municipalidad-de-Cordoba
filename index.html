@@ -710,8 +710,7 @@
                             if (
                                 tipo.includes('hospital') ||
                                 tipo.includes('hpa') ||
-                                nombre.includes('urgencias') ||
-                                nombre.includes('hospital')
+                                nombre.includes('padre la monaca')
                             ) {
                                 icono = iconoHPA;
                             } else if (
@@ -731,9 +730,7 @@
                         onEachFeature: (feature, layer) => {
                             const props = feature.properties;
                             const nombre = (props.centro || '').toLowerCase();
-                            const tipo = (props.tipo || '').toLowerCase();
 
-                            // Popups especiales
                             if (
                                 nombre.includes('salud mental') &&
                                 nombre.includes('direccion')
@@ -760,30 +757,21 @@
                                     </div>
                                 `);
                             } else {
-                                // Usar datos de zonas solo si están disponibles
-                                const zonaId = parseInt(props.zona);
-                                const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === zonaId);
-
-                                const datosCentro = {
-                                    nombre: props.centro || 'Centro de Salud',
-                                    institucion: props.institucion,
-                                    tipo: props.tipo,
-                                    direccion: props.direccion,
-                                    poblacion: infoZona?.PoblacionTotal ?? 0,
-                                    mujeres: infoZona?.Mujeres ?? 0,
-                                    hombres: infoZona?.Varones ?? 0,
-                                    sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                                    porcentaje_sin_cobertura: porcentaje(infoZona?.PoblacionSinCobertura, infoZona?.PoblacionTotal),
-                                    hogares: infoZona?.Hogares ?? 0,
-                                    hogares_nbi: infoZona?.HogaresNBI ?? 0
-                                };
-
-                                const popupContent = crearPopupCentroSalud(datosCentro);
+                                const popupContent = `
+                                    <div style="font-family: sans-serif;">
+                                        <div style="font-weight: bold; color: #005288; text-align: center;">
+                                            ${props.centro || 'Centro de Salud'}
+                                        </div>
+                                        <div style="font-size: 13px;">
+                                            <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
+                                            <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
+                                            <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
+                                        </div>
+                                    </div>
+                                `;
                                 layer.bindPopup(popupContent);
                             }
                         }
-
-
                     }
                 ).addTo(map);
             }
@@ -797,10 +785,13 @@
                     map.removeLayer(capaEfectores);
                 }
 
-                // ✅ Trae todos los efectores que pertenezcan a la zona (sin filtrar por tipo)
-                const efectoresFiltrados = efectoresData.filter(e => {
-                    const props = e.properties;
-                    return parseInt(props.zona) === zonaId;
+                const efectoresFiltrados = efectoresData.filter((e) => {
+                    try {
+                        return parseInt(e.properties?.zona) === zonaId;
+                    } catch (error) {
+                        console.error('Error al procesar zona del efector:', e, error);
+                        return false;
+                    }
                 });
 
                 capaEfectores = L.geoJSON(
@@ -812,6 +803,7 @@
                         pointToLayer: (feature, latlng) => {
                             const nombre = (feature.properties?.centro || '').toLowerCase();
                             const tipo = (feature.properties?.tipo || '').toLowerCase();
+
                             let icono = iconoCentroSalud;
 
                             if (
@@ -864,31 +856,25 @@
                                     </div>
                                 `);
                             } else {
-                                const zonaId = parseInt(props.zona);
-                                const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === zonaId);
-
-                                const datosCentro = {
-                                    nombre: props.centro || 'Centro de Salud',
-                                    institucion: props.institucion,
-                                    tipo: props.tipo,
-                                    direccion: props.direccion,
-
-                                    poblacion: infoZona?.PoblacionTotal ?? 0,
-                                    mujeres: infoZona?.Mujeres ?? 0,
-                                    hombres: infoZona?.Varones ?? 0,
-                                    sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                                    porcentaje_sin_cobertura: porcentaje(infoZona?.PoblacionSinCobertura, infoZona?.PoblacionTotal),
-                                    hogares: infoZona?.Hogares ?? 0,
-                                    hogares_nbi: infoZona?.HogaresNBI ?? 0
-                                };
-
-                                const popupContent = crearPopupCentroSalud(datosCentro);
+                                const popupContent = `
+                                    <div style="font-family: sans-serif;">
+                                        <div style="font-weight: bold; color: #005288; text-align: center;">
+                                            ${props.centro || 'Centro de Salud'}
+                                        </div>
+                                        <div style="font-size: 13px;">
+                                            <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
+                                            <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
+                                            <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
+                                        </div>
+                                    </div>
+                                `;
                                 layer.bindPopup(popupContent);
                             }
                         }
                     }
                 ).addTo(map);
             }
+
 
 
 
