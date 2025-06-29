@@ -775,22 +775,22 @@
 
                 const efectoresFiltrados = efectoresData.filter((e) => {
                     const props = e.properties || {};
-                    const tipo = (props.tipo || '').toLowerCase();
+                    const Tipo = (props.Tipo || '').toLowerCase();
                     const nombre = (props.centro || '').toLowerCase();
                     const zona = parseInt(props.zona);
                     const lat = e.geometry?.coordinates?.[1];
                     const lng = e.geometry?.coordinates?.[0];
 
                     const mostrar = 
-                        tipo.includes('centro de salud') ||
-                        tipo.includes('salud mental') ||
-                        tipo.includes('hospital municipal') ||
-                        tipo.includes('hospital pronta atención') ||
-                        tipo.includes('medicina preventiva') ||
-                        tipo.includes('secretaría de salud') ||
-                        tipo.includes('secretaria de salud') ||
-                        tipo.includes('servicio odontológico') ||
-                        tipo.includes('dem') ||
+                        Tipo.includes('centro de salud') ||
+                        Tipo.includes('salud mental') ||
+                        Tipo.includes('hospital municipal') ||
+                        Tipo.includes('hospital pronta atención') ||
+                        Tipo.includes('medicina preventiva') ||
+                        Tipo.includes('secretaría de salud') ||
+                        Tipo.includes('secretaria de salud') ||
+                        Tipo.includes('servicio odontológico') ||
+                        Tipo.includes('dem') ||
                         nombre.includes('padre la monaca');
 
                     return zona === zonaId && mostrar && lat && lng;
@@ -800,22 +800,22 @@
                     pointToLayer: (feature, latlng) => {
                         const props = feature.properties || {};
                         const nombre = (props.centro || '').toLowerCase();
-                        const tipo = (props.tipo || '').toLowerCase();
+                        const Tipo = (props.Tipo || '').toLowerCase();
 
                         let icono = iconoCentroSalud;
                         if (
-                            tipo.includes('hospital') ||
-                            tipo.includes('hpa') ||
-                            nombre.includes('padre la monaca')
+                            Tipo.includes('hospital') ||
+                            Tipo.includes('hpa') ||
+                            Tipo.includes('padre la monaca')
                         ) {
                             icono = iconoHPA;
                         } else if (
-                            tipo.includes('medicina preventiva') ||
-                            tipo.includes('secretaría de salud') ||
-                            tipo.includes('secretaria de salud') ||
-                            tipo.includes('servicio odontológico') ||
-                            tipo.includes('salud mental') ||
-                            tipo.includes('dem')
+                            Tipo.includes('medicina preventiva') ||
+                            Tipo.includes('secretaría de salud') ||
+                            Tipo.includes('secretaria de salud') ||
+                            Tipo.includes('servicio odontológico') ||
+                            Tipo.includes('salud mental') ||
+                            Tipo.includes('dem')
                         ) {
                             icono = iconoEfectores;
                         }
