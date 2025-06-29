@@ -702,8 +702,11 @@
                     },
                     {
                         pointToLayer: (feature, latlng) => {
-                            const nombre = (feature.properties?.centro || '').toLowerCase();
-                            const tipo = (feature.properties?.tipo || '').toLowerCase();
+                            const nombre = (feature.properties?.centro || feature.properties?.Centro || '').toLowerCase();
+                            const tipo = (feature.properties?.tipo || feature.properties?.Tipo || '').toLowerCase();
+                            const direccion = feature.properties?.direccion || feature.properties?.Direccion || 'S/D';
+                            const institucion = feature.properties?.institucion || feature.properties?.Institucion || 'S/D';
+
 
                             let icono = iconoCentroSalud;
 
@@ -729,7 +732,10 @@
                         },
                        onEachFeature: (feature, layer) => {
                             const props = feature.properties;
-                            const nombre = (props.centro || '').toLowerCase();
+                            const nombre = (props.Centro || '').toLowerCase();
+                            const tipo = (props.Tipo || '').toLowerCase();
+                            const direccion = props.Direccion || 'S/D';
+                            const institucion = props.institucion || 'S/D';
 
                             if (
                                 nombre.includes('salud mental') &&
@@ -806,8 +812,11 @@
                     },
                     {
                         pointToLayer: (feature, latlng) => {
-                            const nombre = (feature.properties?.centro || '').toLowerCase();
-                            const tipo = (feature.properties?.tipo || '').toLowerCase();
+                            const nombre = (feature.properties?.centro || feature.properties?.Centro || '').toLowerCase();
+                            const tipo = (feature.properties?.tipo || feature.properties?.Tipo || '').toLowerCase();
+                            const direccion = feature.properties?.direccion || feature.properties?.Direccion || 'S/D';
+                            const institucion = feature.properties?.institucion || feature.properties?.Institucion || 'S/D';
+
                             let icono = iconoCentroSalud;
 
                             if (
@@ -832,8 +841,10 @@
                         },
                         onEachFeature: (feature, layer) => {
                             const props = feature.properties;
-                            const nombre = (props.centro || '').toLowerCase();
-
+                            const nombre = (props.Centro || '').toLowerCase();
+                            const tipo = (props.Tipo || '').toLowerCase();
+                            const direccion = props.Direccion || 'S/D';
+                            const institucion = props.institucion || 'S/D';
                             if (
                                 nombre.includes('salud mental') &&
                                 nombre.includes('direccion')
