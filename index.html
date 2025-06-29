@@ -688,22 +688,59 @@
                     console.error('❌ efectoresData no está cargado todavía.');
                     return;
                 }
-            
+
                 if (capaEfectores) {
                     map.removeLayer(capaEfectores);
                 }
-            
+
                 const efectoresFiltrados = efectoresData.filter((e) => {
                     const props = e.properties || {};
                     const tipo = (props.tipo || '').toLowerCase();
+                    const nombre = (props.centro || '').toLowerCase();
                     const lat = e.geometry?.coordinates?.[1];
                     const lng = e.geometry?.coordinates?.[0];
-                    return tipo.includes('centro de salud') && lat && lng;
+
+                    // Solo tipos permitidos
+                    const mostrar = 
+                        tipo.includes('centro de salud') ||
+                        tipo.includes('salud mental') ||
+                        tipo.includes('hospital municipal') ||
+                        tipo.includes('hospital pronta atención') ||
+                        tipo.includes('medicina preventiva') ||
+                        tipo.includes('secretaría de salud') ||
+                        tipo.includes('secretaria de salud') ||
+                        tipo.includes('servicio odontológico') ||
+                        tipo.includes('dem') ||
+                        nombre.includes('padre la monaca');
+
+                    return mostrar && lat && lng;
                 });
-            
+
                 capaEfectores = L.geoJSON(efectoresFiltrados, {
                     pointToLayer: (feature, latlng) => {
-                        return L.marker(latlng, { icon: iconoCentroSalud });
+                        const props = feature.properties || {};
+                        const nombre = (props.centro || '').toLowerCase();
+                        const tipo = (props.tipo || '').toLowerCase();
+
+                        let icono = iconoCentroSalud;
+                        if (
+                            tipo.includes('hospital') ||
+                            tipo.includes('hpa') ||
+                            nombre.includes('padre la monaca')
+                        ) {
+                            icono = iconoHPA;
+                        } else if (
+                            tipo.includes('medicina preventiva') ||
+                            tipo.includes('secretaría de salud') ||
+                            tipo.includes('secretaria de salud') ||
+                            tipo.includes('servicio odontológico') ||
+                            tipo.includes('salud mental') ||
+                            tipo.includes('dem')
+                        ) {
+                            icono = iconoEfectores;
+                        }
+
+                        return L.marker(latlng, { icon: icono });
                     },
                     onEachFeature: (feature, layer) => {
                         const props = feature.properties || {};
@@ -722,33 +759,68 @@
                         layer.bindPopup(popup);
                     }
                 }).addTo(map);
-            
-                console.log(`✔️ Mostrando ${efectoresFiltrados.length} centros de salud.`);
-            }
 
+                console.log(`✔️ Mostrando ${efectoresFiltrados.length} efectores permitidos.`);
+            }
 
            function mostrarEfectoresPorZona(zonaId) {
                 if (!efectoresData) {
                     console.error('❌ efectoresData no está cargado todavía.');
                     return;
                 }
-            
+
                 if (capaEfectores) {
                     map.removeLayer(capaEfectores);
                 }
-            
+
                 const efectoresFiltrados = efectoresData.filter((e) => {
                     const props = e.properties || {};
                     const tipo = (props.tipo || '').toLowerCase();
+                    const nombre = (props.centro || '').toLowerCase();
                     const zona = parseInt(props.zona);
                     const lat = e.geometry?.coordinates?.[1];
                     const lng = e.geometry?.coordinates?.[0];
-                    return tipo.includes('centro de salud') && zona === zonaId && lat && lng;
+
+                    const mostrar = 
+                        tipo.includes('centro de salud') ||
+                        tipo.includes('salud mental') ||
+                        tipo.includes('hospital municipal') ||
+                        tipo.includes('hospital pronta atención') ||
+                        tipo.includes('medicina preventiva') ||
+                        tipo.includes('secretaría de salud') ||
+                        tipo.includes('secretaria de salud') ||
+                        tipo.includes('servicio odontológico') ||
+                        tipo.includes('dem') ||
+                        nombre.includes('padre la monaca');
+
+                    return zona === zonaId && mostrar && lat && lng;
                 });
-            
+
                 capaEfectores = L.geoJSON(efectoresFiltrados, {
                     pointToLayer: (feature, latlng) => {
-                        return L.marker(latlng, { icon: iconoCentroSalud });
+                        const props = feature.properties || {};
+                        const nombre = (props.centro || '').toLowerCase();
+                        const tipo = (props.tipo || '').toLowerCase();
+
+                        let icono = iconoCentroSalud;
+                        if (
+                            tipo.includes('hospital') ||
+                            tipo.includes('hpa') ||
+                            nombre.includes('padre la monaca')
+                        ) {
+                            icono = iconoHPA;
+                        } else if (
+                            tipo.includes('medicina preventiva') ||
+                            tipo.includes('secretaría de salud') ||
+                            tipo.includes('secretaria de salud') ||
+                            tipo.includes('servicio odontológico') ||
+                            tipo.includes('salud mental') ||
+                            tipo.includes('dem')
+                        ) {
+                            icono = iconoEfectores;
+                        }
+
+                        return L.marker(latlng, { icon: icono });
                     },
                     onEachFeature: (feature, layer) => {
                         const props = feature.properties || {};
@@ -767,9 +839,10 @@
                         layer.bindPopup(popup);
                     }
                 }).addTo(map);
-            
-                console.log(`✔️ Zona ${zonaId}: ${efectoresFiltrados.length} centros de salud.`);
+
+                console.log(`✔️ Zona ${zonaId}: ${efectoresFiltrados.length} efectores permitidos.`);
             }
+
 
 
             function mostrarZonaInfo(feature, id, layer) {
