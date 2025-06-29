@@ -441,7 +441,7 @@
             }
 
             // Cargar efectores y zonas
-           const fetchEfectores = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.json")
+           const fetchEfectores = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.geojson")
                 .then(res => {
                     if (!res.ok) throw new Error(`Error al cargar efectores.json: ${res.status}`);
                     return res.json();
