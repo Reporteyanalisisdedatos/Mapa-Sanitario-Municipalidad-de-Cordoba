@@ -1,0 +1,41 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          NaN,
+          NaN
+        ]
+      },
+      "properties": {
+        "centro": "Coordinacion Tecnologica",
+        "direccion": "Jujuy 366",
+        "tipo": "Repartición",
+        "institucion": "Coordinacion Tecnologica",
+        "ciudad": "Córdoba, Argentina",
+        "id": "Coordinacion Tecnologica"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          NaN,
+          NaN
+        ]
+      },
+      "properties": {
+        "centro": "Direccion de Epidemiologia",
+        "direccion": "Domingo F. Sarmiento 450",
+        "tipo": "Repartición",
+        "institucion": "Direccion de Epidemiologia",
+        "ciudad": "Córdoba, Argentina",
+        "id": "Direccion de Epidemiologia"
+      }
+    }
+  ]
+}
