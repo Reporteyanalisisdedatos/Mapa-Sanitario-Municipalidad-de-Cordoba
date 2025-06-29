@@ -264,11 +264,10 @@
             <div id="header-title">Mapa Sanitario - Provincia de Córdoba</div>
             <div id="header-logos">
                 <div class="logo-container">
-                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/SecreB.png" alt="Secretaría de Salud" />
+                    <img src="SecreB.png" alt="Secretaría de Salud" />
                 </div>
                 <div class="logo-container">
-                    
-                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HorizontalCTWhite.png" alt="Coordinación Tecnológica" alt="Coordinación Tecnológica" />
+                    <img src="13 - HorizontalCTWhite.png" alt="Coordinación Tecnológica" />
                 </div>
             </div>
         </div>
@@ -294,7 +293,7 @@
                 <label for="selZONA">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <div id="return-button" title="Volver a la vista general de Zonas" style="display: none; cursor: pointer;">
-                            <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/atras.png" alt="Volver" style="width: 22px; height: 22px;" />
+                            <img src="atras.png" alt="Volver" style="width: 22px; height: 22px;" />
                         </div>
                         <select id="selZONA">
                             <option value="">-- Seleccionar Zona --</option>
@@ -343,37 +342,36 @@
         const allZonesSummaryPanel = document.getElementById('all-zones-summary-panel');
         const allZonesList = document.getElementById('all-zones-list');
         const totalCapitalPopulationDiv = document.getElementById('total-capital-population');
-        
-        let datosZonasPoblacion = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             const map = L.map('map').setView([-31.42, -64.18], 11);
 
             const iconoEfectores = L.icon({
-                iconUrl: 'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/EFECTORES.png',
+                iconUrl: 'EFECTORES.png',
                 iconSize: [36, 36],
                 iconAnchor: [18, 36],
                 popupAnchor: [0, -36],
             });
 
             const iconoHPA = L.icon({
-                iconUrl: 'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HOSP-HPA-PLM.png',
+                iconUrl: 'HOSP-HPA-PLM.png',
                 iconSize: [38, 38],
                 iconAnchor: [19, 38],
                 popupAnchor: [0, -38],
             });
 
             const iconoCentroSalud = L.icon({
-                iconUrl: 'https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/CS.png',
-                iconSize: [35, 35],  // Ajustado a 35x35 como en el segundo código
-                iconAnchor: [15, 35], // Ajustado el anchor
-                popupAnchor: [0, -35] // Ajustado el popupAnchor
+                iconUrl: 'CS.png',
+                iconSize: [35, 35],
+                iconAnchor: [15, 35],
+                popupAnchor: [0, -35],
             });
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; OpenStreetMap contributors',
             }).addTo(map);
+
             const estilos = (feature) => ({
                 color: feature.properties.stroke || '#3388ff',
                 weight: feature.properties['stroke-width'] || 2,
@@ -384,26 +382,27 @@
 
             // Función para obtener el nombre de la feature (para etiquetas y popups)
             function getFeatureName(props, layerName) {
-                // *** POR FAVOR, REEMPLAZA 'nombre_propiedad_real' CON EL NOMBRE DE LA PROPIEDAD EN TUS JSONS ***
-                // EJEMPLO: if (layerName === 'BARRIOS' && props.hasOwnProperty('NOMBRE_DEL_BARRIO')) { return props.NOMBRE_DEL_BARRIO; }
-                if (layerName === 'BARRIOS' && props.hasOwnProperty('nombre_propiedad_real_barrio')) { 
-                    return props.nombre_propiedad_real_barrio;
+                // Prioridad por capa específica
+                if (layerName === 'BARRIOS' && props.hasOwnProperty('BARRIO')) { 
+                    return props.BARRIO;
                 }
-                if (layerName === 'CIRCUITO' && props.hasOwnProperty('circuito')) { 
-                    return props.circuito;
+                if (layerName === 'CIRCUITO' && props.hasOwnProperty('CIRCUITO')) { 
+                    return props.CIRCUITO;
                 }
-                if (layerName === 'LOCALIDADES' && props.hasOwnProperty('nombre_propiedad_real_localidad')) { 
-                    return props.nombre_propiedad_real_localidad;
+                if (layerName === 'LOCALIDADES' && props.hasOwnProperty('LOCALIDAD')) { 
+                    return props.LOCALIDAD;
                 }
-                if (layerName === 'SECCIONALES' && props.hasOwnProperty('nombre_seccional')) { // Ejemplo, si seccionales tiene una propiedad diferente
-                    return props.nombre_seccional;
+                if (layerName === 'SECCIONALES' && props.hasOwnProperty('SECCIONAL')) {
+                    return props.SECCIONAL;
                 }
-                if (layerName === 'DEPARTAMENTOS' && props.hasOwnProperty('nombre_departamento')) { // Ejemplo
-                    return props.nombre_departamento;
+                if (layerName === 'DEPARTAMENTOS' && props.hasOwnProperty('DEPTO')) {
+                    return props.DEPTO;
+                }
+                if (layerName === 'ZONAS' && props.hasOwnProperty('ZONA')) {
+                    return props.ZONA;
                 }
 
-
-                // Prioridad genérica (si no se especifica una propiedad para la capa)
+                // Prioridad genérica
                 if (props.name) return props.name;
                 if (props.NOM_ZONA) return props.NOM_ZONA;
                 if (props.CODIGO) return props.CODIGO;
@@ -437,58 +436,29 @@
                 return null;
             }
 
-            // Cargar efectores y zonas
-           const fetchEfectores = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/efectores.geojson")
-                .then(res => {
-                    if (!res.ok) throw new Error(`Error al cargar efectores.json: ${res.status}`);
-                    return res.json();
-                });
-
-            const fetchZonasGeo = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas.geojson")
-                .then(res => {
-                    if (!res.ok) throw new Error(`Error al cargar zonas.geojson: ${res.status}`);
-                    return res.json();
-                });
-
-            const fetchZonasValores = fetch("https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/zonas_valores.json")
-                .then(res => {
-                    if (!res.ok) throw new Error(`Error al cargar zonas_valores.json: ${res.status}`);
-                    return res.json();
-                });
-
-
-            Promise.all([fetchEfectores, fetchZonasGeo, fetchZonasValores])
-                .then(([efectores, zonasGeo, zonasValores]) => {
-                    if (!efectores || !efectores.features) {
-                        throw new Error("efectores.json no tiene la estructura esperada.");
-                    }
-                    if (!zonasGeo || !zonasGeo.features) {
-                        throw new Error("zonas.geojson no tiene la estructura esperada.");
-                    }
-                    if (!Array.isArray(zonasValores)) {
-                        throw new Error("zonas_valores.json no es un array.");
-                    }
-
+            // Cargar efectores y zonas desde archivos GeoJSON
+            Promise.all([
+                fetch('Vista_CentrosHorarios.geojson').then(res => res.json()),
+                fetch('Zonas.geojson').then(res => res.json())
+            ])
+                .then(([efectores, zonas]) => {
                     efectoresData = efectores.features;
-                    allZonasFeatures = zonasGeo.features;
-                    datosZonasPoblacion = zonasValores;
+                    allZonasFeatures = zonas.features;
                     allZonasDataLoaded = true;
+                    
+                    console.log("✅ Efectores cargados:", efectores.features.length);
+                    console.log("✅ Zonas cargadas:", zonas.features.length);
 
-                    console.log("✅ efectores cargados:", efectoresData.length);
-                    poblarSelectorZonas(allZonasFeatures);
+                    poblarSelectorZonas(zonas.features);
                     mostrarTodosEfectores();
-                    selZONA.value = "";
+                    
+                    selZONA.value = ""; 
                     zonaInfoPanel.style.display = 'none';
                     allZonesSummaryPanel.style.display = 'none';
                     returnButton.style.display = 'none';
                 })
-                .catch(error => {
-                    console.error("Error cargando datos iniciales:", error);
-                    if (error.message.includes("Failed to fetch")) {
-                        alert("No se pudo conectar al servidor. Verificá tu conexión a internet.");
-                    } else {
-                        alert(`Error al cargar datos: ${error.message}`);
-                    }
+                .catch((error) => {
+                    console.error('Error cargando datos:', error);
                 });
 
             const archivosCapas = [
@@ -497,20 +467,17 @@
                 'DEPARTAMENTOS',
                 'LOCALIDADES',
             ];
-            const urlBase = "https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/";
+            
             archivosCapas.forEach((nombre) => {
-                fetch(`${urlBase}${nombre}.json`)
+                fetch(`${nombre}.geojson`)
                     .then((res) => {
-                        if (!res.ok) {
-                            throw new Error(`HTTP error! status: ${res.status} for ${nombre}.json`);
-                        }
+                        if (!res.ok) throw new Error(`HTTP error! status: ${res.status} for ${nombre}.geojson`);
                         return res.json();
                     })
                     .then((geojson) => {
                         capas[nombre] = L.geoJSON(geojson, {
                             style: estilos,
                             onEachFeature: (feature, layer) => {
-                                // Usar getFeatureName con el nombre de la capa
                                 const nom = getFeatureName(feature.properties, nombre);
                                 layer.bindPopup(`<strong>${nom}</strong>`);
                             },
@@ -521,7 +488,6 @@
                         geojson.features.forEach(feature => {
                             const centroid = getCentroid(feature);
                             if (centroid) {
-                                // Usar getFeatureName con el nombre de la capa
                                 const name = getFeatureName(feature.properties, nombre);
                                 if (name && name !== 'Sin nombre') { 
                                     const labelHtml = `<div class="layer-label">${name}</div>`;
@@ -537,11 +503,9 @@
                             }
                         });
                         capasLabels[nombre] = labelsGroup;
-
                     })
                     .catch((error) => {
-                        console.error(`Error cargando ${nombre}.json:`, error);
-                        console.log(`Asegúrate de que ${nombre}.json exista, sea un GeoJSON válido y tenga una propiedad de nombre legible.`);
+                        console.error(`Error cargando ${nombre}.geojson:`, error);
                     });
             });
 
@@ -685,164 +649,202 @@
             
             function mostrarTodosEfectores() {
                 if (!efectoresData) {
-                    console.error('❌ efectoresData no está cargado todavía.');
+                    console.error('❌ efectoresData no está cargado todavía para mostrar todos los efectores.');
                     return;
                 }
-
                 if (capaEfectores) {
                     map.removeLayer(capaEfectores);
                 }
 
-                const efectoresFiltrados = efectoresData.filter((e) => {
-                    const props = e.properties || {};
-                    const tipo = (props.tipo || '').toLowerCase();
-                    const nombre = (props.centro || '').toLowerCase();
-                    const lat = e.geometry?.coordinates?.[1];
-                    const lng = e.geometry?.coordinates?.[0];
-
-                    // Solo tipos permitidos
-                    const mostrar = 
-                        tipo.includes('centro de salud') ||
-                        tipo.includes('salud mental') ||
-                        tipo.includes('hospital municipal') ||
-                        tipo.includes('hospital pronta atención') ||
-                        tipo.includes('medicina preventiva') ||
-                        tipo.includes('secretaría de salud') ||
-                        tipo.includes('secretaria de salud') ||
-                        tipo.includes('servicio odontológico') ||
-                        tipo.includes('dem') ||
-                        nombre.includes('padre la monaca');
-
-                    return mostrar && lat && lng;
-                });
-
-                capaEfectores = L.geoJSON(efectoresFiltrados, {
-                    pointToLayer: (feature, latlng) => {
-                        const props = feature.properties || {};
-                        const nombre = (props.centro || '').toLowerCase();
-                        const tipo = (props.tipo || '').toLowerCase();
-
-                        let icono = iconoCentroSalud;
-                        if (
-                            tipo.includes('hospital') ||
-                            tipo.includes('hpa') ||
-                            nombre.includes('padre la monaca')
-                        ) {
-                            icono = iconoHPA;
-                        } else if (
-                            tipo.includes('medicina preventiva') ||
-                            tipo.includes('secretaría de salud') ||
-                            tipo.includes('secretaria de salud') ||
-                            tipo.includes('servicio odontológico') ||
-                            tipo.includes('salud mental') ||
-                            tipo.includes('dem')
-                        ) {
-                            icono = iconoEfectores;
-                        }
-
-                        return L.marker(latlng, { icon: icono });
+                capaEfectores = L.geoJSON(
+                    {
+                        type: 'FeatureCollection',
+                        features: efectoresData,
                     },
-                    onEachFeature: (feature, layer) => {
-                        const props = feature.properties || {};
-                        const popup = `
-                            <div style="font-family: sans-serif;">
-                                <div style="font-weight: bold; color: #005288; text-align: center;">
-                                    ${props.centro || 'Centro de Salud'}
-                                </div>
-                                <div style="font-size: 13px;">
-                                    <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
-                                    <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
-                                    <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                </div>
-                            </div>
-                        `;
-                        layer.bindPopup(popup);
-                    }
-                }).addTo(map);
+                    {
+                        pointToLayer: (feature, latlng) => {
+                            const nombre = (feature.properties?.centro || '').toLowerCase();
+                            const tipo = (feature.properties?.tipo || '').toLowerCase();
 
-                console.log(`✔️ Mostrando ${efectoresFiltrados.length} efectores permitidos.`);
+                            let icono = iconoCentroSalud;
+
+                            if (
+                                tipo.includes('hospital') ||
+                                tipo.includes('hpa') ||
+                                nombre.includes('padre la monaca')
+                            ) {
+                                icono = iconoHPA;
+                            } else if (
+                                nombre.includes('medicina preventiva') ||
+                                nombre.includes('dem') ||
+                                nombre.includes('secretaría de salud') ||
+                                nombre.includes('secretaria de salud') ||
+                                nombre.includes('adicciones') ||
+                                tipo.includes('salud mental') ||
+                                tipo.includes('pec')
+                            ) {
+                                icono = iconoEfectores;
+                            }
+                            
+                            return L.marker(latlng, { icon: icono });
+                        },
+                       onEachFeature: (feature, layer) => {
+                            const props = feature.properties;
+                            const nombre = (props.centro || '').toLowerCase();
+
+                            if (
+                                nombre.includes('salud mental') &&
+                                nombre.includes('direccion')  // solo si es Dirección de Salud Mental
+                            ) {
+                                // Mostrar popup doble solo para este caso
+                                layer.bindPopup(`<div style="font-family: sans-serif; min-width: 240px;">
+                                    <!-- Primera tarjeta -->
+                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                        Dirección de Salud Mental
+                                    </div>
+                                    <div style="font-size: 13px; line-height: 1.4; margin-bottom: 10px;">
+                                        <div><b>Institución:</b> Dirección de Salud Mental</div>
+                                        <div><b>Tipo:</b> Salud Mental</div>
+                                        <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
+                                    </div>
+
+                                    <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;" />
+
+                                    <!-- Segunda tarjeta -->
+                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                        Centro de Adicciones Lazos
+                                    </div>
+                                    <div style="font-size: 13px; line-height: 1.4;">
+                                        <div><b>Institución:</b> Centro de Adicciones Lazos</div>
+                                        <div><b>Tipo:</b> Adicciones</div>
+                                        <div><b>Dirección:</b> Mismo predio / entrada compartida</div>
+                                    </div>
+                                </div>`);
+                            } else {
+                                // Resto de los efectores
+                                const datosCentro = {
+                                    nombre: props.centro || 'Centro de Salud',
+                                    poblacion: props.poblacion,
+                                    mujeres: props.mujeres,
+                                    hombres: props.varones,
+                                    sin_cobertura: props.sin_cobertura,
+                                    porcentaje_sin_cobertura: props.porcentaje_sin_cobertura,
+                                    hogares: props.hogares,
+                                    hogares_nbi: props.hogares_nbi,
+                                    institucion: props.institucion,
+                                    tipo: props.tipo,
+                                    direccion: props.direccion,
+                                    horario: props.horario,
+                                };
+
+                                const popupContent = crearPopupCentroSalud(datosCentro);
+                                layer.bindPopup(popupContent);
+                            }
+                        },
+                    }
+                ).addTo(map);
             }
 
-           function mostrarEfectoresPorZona(zonaId) {
+            function mostrarEfectoresPorZona(zonaId) {
                 if (!efectoresData) {
                     console.error('❌ efectoresData no está cargado todavía.');
                     return;
                 }
-
                 if (capaEfectores) {
                     map.removeLayer(capaEfectores);
                 }
 
-                const efectoresFiltrados = efectoresData.filter((e) => {
-                    const props = e.properties || {};
-                    const Tipo = (props.Tipo || '').toLowerCase();
-                    const nombre = (props.centro || '').toLowerCase();
-                    const zona = parseInt(props.zona);
-                    const lat = e.geometry?.coordinates?.[1];
-                    const lng = e.geometry?.coordinates?.[0];
-
-                    const mostrar = 
-                        Tipo.includes('centro de salud') ||
-                        Tipo.includes('salud mental') ||
-                        Tipo.includes('hospital municipal') ||
-                        Tipo.includes('hospital pronta atención') ||
-                        Tipo.includes('medicina preventiva') ||
-                        Tipo.includes('secretaría de salud') ||
-                        Tipo.includes('secretaria de salud') ||
-                        Tipo.includes('servicio odontológico') ||
-                        Tipo.includes('dem') ||
-                        nombre.includes('padre la monaca');
-
-                    return zona === zonaId && mostrar && lat && lng;
+                const efectoresEnZona = efectoresData.filter((e) => {
+                    try {
+                        return parseInt(e.properties?.zona) === zonaId;
+                    } catch (error) {
+                        console.error('Error al procesar zona del efector:', e, error);
+                        return false;
+                    }
                 });
 
-                capaEfectores = L.geoJSON(efectoresFiltrados, {
-                    pointToLayer: (feature, latlng) => {
-                        const props = feature.properties || {};
-                        const nombre = (props.centro || '').toLowerCase();
-                        const Tipo = (props.Tipo || '').toLowerCase();
-
-                        let icono = iconoCentroSalud;
-                        if (
-                            Tipo.includes('hospital') ||
-                            Tipo.includes('hpa') ||
-                            Tipo.includes('padre la monaca')
-                        ) {
-                            icono = iconoHPA;
-                        } else if (
-                            Tipo.includes('medicina preventiva') ||
-                            Tipo.includes('secretaría de salud') ||
-                            Tipo.includes('secretaria de salud') ||
-                            Tipo.includes('servicio odontológico') ||
-                            Tipo.includes('salud mental') ||
-                            Tipo.includes('dem')
-                        ) {
-                            icono = iconoEfectores;
-                        }
-
-                        return L.marker(latlng, { icon: icono });
+                capaEfectores = L.geoJSON(
+                    {
+                        type: 'FeatureCollection',
+                        features: efectoresEnZona,
                     },
-                    onEachFeature: (feature, layer) => {
-                        const props = feature.properties || {};
-                        const popup = `
-                            <div style="font-family: sans-serif;">
-                                <div style="font-weight: bold; color: #005288; text-align: center;">
-                                    ${props.centro || 'Centro de Salud'}
-                                </div>
-                                <div style="font-size: 13px;">
-                                    <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
-                                    <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
-                                    <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                </div>
-                            </div>
-                        `;
-                        layer.bindPopup(popup);
+                    {
+                        pointToLayer: (feature, latlng) => {
+                            const nombre = (feature.properties?.centro || '').toLowerCase();
+                            const tipo = (feature.properties?.tipo || '').toLowerCase();
+
+                            let icono = iconoCentroSalud;
+
+                            if (
+                                tipo.includes('hospital') ||
+                                tipo.includes('hpa') ||
+                                nombre.includes('padre la monaca')
+                            ) {
+                                icono = iconoHPA;
+                            } else if (
+                                nombre.includes('medicina preventiva') ||
+                                nombre.includes('dem') ||
+                                nombre.includes('secretaría de salud') ||
+                                nombre.includes('secretaria de salud') ||
+                                nombre.includes('adicciones') ||
+                                tipo.includes('salud mental') ||
+                                tipo.includes('pec')
+                            ) {
+                                icono = iconoEfectores;
+                            }
+                            
+                            return L.marker(latlng, { icon: icono });
+                        },
+                        onEachFeature: (feature, layer) => {
+                            const props = feature.properties;
+                            const nombre = (props.centro || '').toLowerCase();
+
+                            if (
+                                nombre.includes('salud mental') &&
+                                nombre.includes('direccion')
+                            ) {
+                                layer.bindPopup(`<div style="font-family: sans-serif; min-width: 240px;">
+                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                        Dirección de Salud Mental
+                                    </div>
+                                    <div style="font-size: 13px; line-height: 1.4; margin-bottom: 10px;">
+                                        <div><b>Institución:</b> Dirección de Salud Mental</div>
+                                        <div><b>Tipo:</b> Salud Mental</div>
+                                        <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
+                                    </div>
+                                    <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;" />
+                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                        Centro de Adicciones Lazos
+                                    </div>
+                                    <div style="font-size: 13px; line-height: 1.4;">
+                                        <div><b>Institución:</b> Centro de Adicciones Lazos</div>
+                                        <div><b>Tipo:</b> Adicciones</div>
+                                        <div><b>Dirección:</b> Mismo predio / entrada compartida</div>
+                                    </div>
+                                </div>`);
+                            } else {
+                                const datosCentro = {
+                                    nombre: props.centro || 'Centro de Salud',
+                                    poblacion: props.poblacion,
+                                    mujeres: props.mujeres,
+                                    hombres: props.varones,
+                                    sin_cobertura: props.sin_cobertura,
+                                    porcentaje_sin_cobertura: props.porcentaje_sin_cobertura,
+                                    hogares: props.hogares,
+                                    hogares_nbi: props.hogares_nbi,
+                                    institucion: props.institucion,
+                                    tipo: props.tipo,
+                                    direccion: props.direccion,
+                                    horario: props.horario,
+                                };
+
+                                const popupContent = crearPopupCentroSalud(datosCentro);
+                                layer.bindPopup(popupContent);
+                            }
+                        },
                     }
-                }).addTo(map);
-
-                console.log(`✔️ Zona ${zonaId}: ${efectoresFiltrados.length} efectores permitidos.`);
+                ).addTo(map);
             }
-
 
 
             function mostrarZonaInfo(feature, id, layer) {
@@ -853,27 +855,24 @@
 
                 const p = feature.properties;
 
-                
+                const poblacionFormatted = p.poblacion?.toLocaleString('es-AR') ?? 'S/D';
+                const mujeresFormatted = p.mujeres?.toLocaleString('es-AR') ?? 'S/D';
+                const varonesFormatted = p.varones?.toLocaleString('es-AR') ?? 'S/D';
+                const hogaresFormatted = p.hogares?.toLocaleString('es-AR') ?? 'S/D';
+                const hogaresNBIFormatted = p.hogares_nbi?.toLocaleString('es-AR') ?? 'S/D';
+                const coberturaFormatted = p.cobertura?.toLocaleString('es-AR') ?? 'S/D';
 
-                const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === parseInt(id));
-
-                const poblacion = infoZona?.PoblacionTotal ?? 0;
-                const mujeres = infoZona?.Mujeres ?? 0;
-                const varones = infoZona?.Hombres ?? 0;
-                const hogares = infoZona?.Hogares ?? 0;
-                const hogaresNBI = infoZona?.HogaresNBI ?? 0;
-                const cobertura = infoZona?.["Pob. Cobertura Publica Exclusiva"] ?? 0;
 
                 const zonaInfoHtml = `
                     <div style="font-size: 28px; font-weight: bold; text-align: center; color: #005288; margin-bottom: 10px;">
-                        ${poblacion.toLocaleString('es-AR')}
+                        ${poblacionFormatted}
                     </div>
                     <div style="font-size: 14px; line-height: 1.5;">
-                        <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeres.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(mujeres, poblacion)}%)</span></div>
-                        <div><b style="color:#3C5AB7;">Varones:</b> ${varones.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(varones, poblacion)}%)</span></div>
-                        <div><b>Hogares:</b> ${hogares.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogares, poblacion)}%)</span></div>
-                        <div><b>Hogares NBI:</b> ${hogaresNBI.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogaresNBI, poblacion)}%)</span></div>
-                        <div><b>Pob. Cobertura Pública Excl:</b> ${cobertura.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(cobertura, poblacion)}%)</span></div>
+                        <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeresFormatted} <span style="color:gray">(${porcentaje(p.mujeres, p.poblacion)}%)</span></div>
+                        <div><b style="color:#3C5AB7;">Varones:</b> ${varonesFormatted} <span style="color:gray">(${porcentaje(p.varones, p.poblacion)}%)</span></div>
+                        <div><b>Hogares:</b> ${hogaresFormatted} <span style="color:gray">(${porcentaje(p.hogares, p.poblacion)}%)</span></div>
+                        <div><b>Hogares NBI:</b> ${hogaresNBIFormatted} <span style="color:gray">(${porcentaje(p.hogares_nbi, p.poblacion)}%)</span></div>
+                        <div><b>Pob. Cobertura Pública Excl:</b> ${coberturaFormatted} <span style="color:gray">(${porcentaje(p.cobertura, p.poblacion)}%)</span></div>
                     </div>
                 `;
 
@@ -951,8 +950,6 @@
                 }
             }
 
-
-
             function porcentaje(parte, total) {
                 if (isNaN(parte) || isNaN(total) || total === 0 || parte === null || total === null) return '0';
                 return ((parte / total) * 100).toFixed(2);
@@ -990,4 +987,4 @@
         });
     </script>
 </body>
-</html> 
+</html>  
