@@ -683,172 +683,94 @@
                 }
             }
             
-            // Función para mostrar todos los efectores (versión simplificada)
             function mostrarTodosEfectores() {
                 if (!efectoresData) {
                     console.error('❌ efectoresData no está cargado todavía.');
                     return;
                 }
+            
                 if (capaEfectores) {
                     map.removeLayer(capaEfectores);
                 }
-
-                capaEfectores = L.geoJSON(efectoresData, {
-                    pointToLayer: function(feature, latlng) {
-                        const props = feature.properties || {};
-                        const nombre = (props.centro || '').toLowerCase();
-                        const tipo = (props.tipo || '').toLowerCase();
-
-                        // Lógica de selección de icono más flexible
-                        if (tipo.includes('hospital') || 
-                            tipo.includes('hpa') || 
-                            nombre.includes('padre la monaca')) {
-                            return L.marker(latlng, {icon: iconoHPA});
-                        } 
-                        else if (nombre.includes('medicina preventiva') ||
-                                 nombre.includes('dem') ||
-                                 nombre.includes('secretaría de salud') ||
-                                 nombre.includes('secretaria de salud') ||
-                                 nombre.includes('adicciones') ||
-                                 tipo.includes('salud mental') ||
-                                 tipo.includes('pec')) {
-                            return L.marker(latlng, {icon: iconoEfectores});
-                        }
-                        else {
-                            return L.marker(latlng, {icon: iconoCentroSalud});
-                        }
+            
+                const efectoresFiltrados = efectoresData.filter((e) => {
+                    const props = e.properties || {};
+                    const tipo = (props.tipo || '').toLowerCase();
+                    const lat = e.geometry?.coordinates?.[1];
+                    const lng = e.geometry?.coordinates?.[0];
+                    return tipo.includes('centro de salud') && lat && lng;
+                });
+            
+                capaEfectores = L.geoJSON(efectoresFiltrados, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.marker(latlng, { icon: iconoCentroSalud });
                     },
-                    onEachFeature: function(feature, layer) {
+                    onEachFeature: (feature, layer) => {
                         const props = feature.properties || {};
-                        const nombre = (props.centro || '').toLowerCase();
-
-                        if (nombre.includes('salud mental') && nombre.includes('direccion')) {
-                            layer.bindPopup(`
-                                <div style="font-family: sans-serif; min-width: 240px;">
-                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                        Dirección de Salud Mental
-                                    </div>
-                                    <div style="font-size: 13px; line-height: 1.4; margin-bottom: 10px;">
-                                        <div><b>Institución:</b> Dirección de Salud Mental</div>
-                                        <div><b>Tipo:</b> Salud Mental</div>
-                                        <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                    </div>
-                                    <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;" />
-                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                        Centro de Adicciones Lazos
-                                    </div>
-                                    <div style="font-size: 13px; line-height: 1.4;">
-                                        <div><b>Institución:</b> Centro de Adicciones Lazos</div>
-                                        <div><b>Tipo:</b> Adicciones</div>
-                                        <div><b>Dirección:</b> Mismo predio / entrada compartida</div>
-                                    </div>
+                        const popup = `
+                            <div style="font-family: sans-serif;">
+                                <div style="font-weight: bold; color: #005288; text-align: center;">
+                                    ${props.centro || 'Centro de Salud'}
                                 </div>
-                            `);
-                        } else {
-                            layer.bindPopup(`
-                                <div style="font-family: sans-serif;">
-                                    <div style="font-weight: bold; color: #005288; text-align: center;">
-                                        ${props.centro || 'Centro de Salud'}
-                                    </div>
-                                    <div style="font-size: 13px;">
-                                        <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
-                                        <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
-                                        <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                    </div>
+                                <div style="font-size: 13px;">
+                                    <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
+                                    <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
+                                    <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
                                 </div>
-                            `);
-                        }
+                            </div>
+                        `;
+                        layer.bindPopup(popup);
                     }
                 }).addTo(map);
+            
+                console.log(`✔️ Mostrando ${efectoresFiltrados.length} centros de salud.`);
             }
 
-            // Función para mostrar efectores por zona (versión simplificada)
-            function mostrarEfectoresPorZona(zonaId) {
+
+           function mostrarEfectoresPorZona(zonaId) {
                 if (!efectoresData) {
                     console.error('❌ efectoresData no está cargado todavía.');
                     return;
                 }
+            
                 if (capaEfectores) {
                     map.removeLayer(capaEfectores);
                 }
-
-                const efectoresEnZona = efectoresData.filter(e => {
-                    try {
-                        return parseInt(e.properties?.zona) === zonaId;
-                    } catch (error) {
-                        console.error('Error al procesar zona del efector:', e, error);
-                        return false;
-                    }
+            
+                const efectoresFiltrados = efectoresData.filter((e) => {
+                    const props = e.properties || {};
+                    const tipo = (props.tipo || '').toLowerCase();
+                    const zona = parseInt(props.zona);
+                    const lat = e.geometry?.coordinates?.[1];
+                    const lng = e.geometry?.coordinates?.[0];
+                    return tipo.includes('centro de salud') && zona === zonaId && lat && lng;
                 });
-
-                capaEfectores = L.geoJSON(efectoresEnZona, {
-                    pointToLayer: function(feature, latlng) {
-                        const props = feature.properties || {};
-                        const nombre = (props.centro || '').toLowerCase();
-                        const tipo = (props.tipo || '').toLowerCase();
-
-                        // Lógica de selección de icono idéntica a mostrarTodosEfectores()
-                        if (tipo.includes('hospital') || 
-                            tipo.includes('hpa') || 
-                            nombre.includes('padre la monaca')) {
-                            return L.marker(latlng, {icon: iconoHPA});
-                        } 
-                        else if (nombre.includes('medicina preventiva') ||
-                                 nombre.includes('dem') ||
-                                 nombre.includes('secretaría de salud') ||
-                                 nombre.includes('secretaria de salud') ||
-                                 nombre.includes('adicciones') ||
-                                 tipo.includes('salud mental') ||
-                                 tipo.includes('pec')) {
-                            return L.marker(latlng, {icon: iconoEfectores});
-                        }
-                        else {
-                            return L.marker(latlng, {icon: iconoCentroSalud});
-                        }
+            
+                capaEfectores = L.geoJSON(efectoresFiltrados, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.marker(latlng, { icon: iconoCentroSalud });
                     },
-                    onEachFeature: function(feature, layer) {
+                    onEachFeature: (feature, layer) => {
                         const props = feature.properties || {};
-                        const nombre = (props.centro || '').toLowerCase();
-
-                        if (nombre.includes('salud mental') && nombre.includes('direccion')) {
-                            layer.bindPopup(`
-                                <div style="font-family: sans-serif; min-width: 240px;">
-                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                        Dirección de Salud Mental
-                                    </div>
-                                    <div style="font-size: 13px; line-height: 1.4; margin-bottom: 10px;">
-                                        <div><b>Institución:</b> Dirección de Salud Mental</div>
-                                        <div><b>Tipo:</b> Salud Mental</div>
-                                        <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                    </div>
-                                    <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;" />
-                                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                        Centro de Adicciones Lazos
-                                    </div>
-                                    <div style="font-size: 13px; line-height: 1.4;">
-                                        <div><b>Institución:</b> Centro de Adicciones Lazos</div>
-                                        <div><b>Tipo:</b> Adicciones</div>
-                                        <div><b>Dirección:</b> Mismo predio / entrada compartida</div>
-                                    </div>
+                        const popup = `
+                            <div style="font-family: sans-serif;">
+                                <div style="font-weight: bold; color: #005288; text-align: center;">
+                                    ${props.centro || 'Centro de Salud'}
                                 </div>
-                            `);
-                        } else {
-                            layer.bindPopup(`
-                                <div style="font-family: sans-serif;">
-                                    <div style="font-weight: bold; color: #005288; text-align: center;">
-                                        ${props.centro || 'Centro de Salud'}
-                                    </div>
-                                    <div style="font-size: 13px;">
-                                        <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
-                                        <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
-                                        <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
-                                    </div>
+                                <div style="font-size: 13px;">
+                                    <div><b>Institución:</b> ${props.institucion || 'S/D'}</div>
+                                    <div><b>Tipo:</b> ${props.tipo || 'S/D'}</div>
+                                    <div><b>Dirección:</b> ${props.direccion || 'S/D'}</div>
                                 </div>
-                            `);
-                        }
+                            </div>
+                        `;
+                        layer.bindPopup(popup);
                     }
                 }).addTo(map);
+            
+                console.log(`✔️ Zona ${zonaId}: ${efectoresFiltrados.length} centros de salud.`);
             }
+
 
             function mostrarZonaInfo(feature, id, layer) {
                 if (!efectoresData) {
