@@ -704,21 +704,28 @@
 
                         let icono = iconoCentroSalud;
 
+                        const nombresEspeciales = [
+                            'medicina preventiva',
+                            'dem',
+                            'secretaría de salud',
+                            'secretaria de salud',
+                            'adicciones',
+                            'salud mental',
+                            'pec',
+                            'direccion de calidad alimentaria',
+                            'direccion de emergencias medicas 107',
+                            'direccion de epidemiologia',
+                            'laboratorio farmaceutico municipal',
+                            'telesalud'
+                        ];
+
                         if (
                             tipo.includes('hospital') ||
                             tipo.includes('hpa') ||
                             nombre.includes('padre la monaca')
                         ) {
                             icono = iconoHPA;
-                        } else if (
-                            nombre.includes('medicina preventiva') ||
-                            nombre.includes('dem') ||
-                            nombre.includes('secretaría de salud') ||
-                            nombre.includes('secretaria de salud') ||
-                            nombre.includes('adicciones') ||
-                            tipo.includes('salud mental') ||
-                            tipo.includes('pec')
-                        ) {
+                        } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
                             icono = iconoEfectores;
                         }
 
@@ -740,7 +747,7 @@
                             mujeres: infoZona?.Mujeres ?? 0,
                             hombres: infoZona?.Varones ?? 0,
                             sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                            porcentaje_sin_cobertura: porcentaje(infoZona?.PoblacionSinCobertura, infoZona?.PoblacionTotal),
+                            porcentaje_sin_cobertura: infoZona?.PorcentajeSinCobertura ?? 0,
                             hogares: infoZona?.Hogares ?? 0,
                             hogares_nbi: infoZona?.HogaresNBI ?? 0
                         };
@@ -750,7 +757,6 @@
                     }
                 }).addTo(map);
             }
-
 
             function mostrarEfectoresPorZona(zonaId) {
                 if (!efectoresData) {
@@ -774,21 +780,28 @@
 
                         let icono = iconoCentroSalud;
 
+                        const nombresEspeciales = [
+                            'medicina preventiva',
+                            'dem',
+                            'secretaría de salud',
+                            'secretaria de salud',
+                            'adicciones',
+                            'salud mental',
+                            'pec',
+                            'direccion de calidad alimentaria',
+                            'direccion de emergencias medicas 107',
+                            'direccion de epidemiologia',
+                            'laboratorio farmaceutico municipal',
+                            'telesalud'
+                        ];
+
                         if (
                             tipo.includes('hospital') ||
                             tipo.includes('hpa') ||
                             nombre.includes('padre la monaca')
                         ) {
                             icono = iconoHPA;
-                        } else if (
-                            nombre.includes('medicina preventiva') ||
-                            nombre.includes('dem') ||
-                            nombre.includes('secretaría de salud') ||
-                            nombre.includes('secretaria de salud') ||
-                            nombre.includes('adicciones') ||
-                            tipo.includes('salud mental') ||
-                            tipo.includes('pec')
-                        ) {
+                        } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
                             icono = iconoEfectores;
                         }
 
@@ -810,7 +823,7 @@
                             mujeres: infoZona?.Mujeres ?? 0,
                             hombres: infoZona?.Varones ?? 0,
                             sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                            porcentaje_sin_cobertura: porcentaje(infoZona?.PoblacionSinCobertura, infoZona?.PoblacionTotal),
+                            porcentaje_sin_cobertura: infoZona?.PorcentajeSinCobertura ?? 0,
                             hogares: infoZona?.Hogares ?? 0,
                             hogares_nbi: infoZona?.HogaresNBI ?? 0
                         };
@@ -821,117 +834,6 @@
                 }).addTo(map);
             }
 
-            function mostrarZonaInfo(feature, id, layer) {
-                if (!efectoresData) {
-                    console.error('❌ efectoresData no está cargado todavía');
-                    return;
-                }
-
-                const p = feature.properties;
-
-                
-
-                const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === parseInt(id));
-
-                const poblacion = infoZona?.PoblacionTotal ?? 0;
-                const mujeres = infoZona?.Mujeres ?? 0;
-                const varones = infoZona?.Hombres ?? 0;
-                const hogares = infoZona?.Hogares ?? 0;
-                const hogaresNBI = infoZona?.HogaresNBI ?? 0;
-                const cobertura = infoZona?.["Pob. Cobertura Publica Exclusiva"] ?? 0;
-
-                const zonaInfoHtml = `
-                    <div style="font-size: 28px; font-weight: bold; text-align: center; color: #005288; margin-bottom: 10px;">
-                        ${poblacion.toLocaleString('es-AR')}
-                    </div>
-                    <div style="font-size: 14px; line-height: 1.5;">
-                        <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeres.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(mujeres, poblacion)}%)</span></div>
-                        <div><b style="color:#3C5AB7;">Varones:</b> ${varones.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(varones, poblacion)}%)</span></div>
-                        <div><b>Hogares:</b> ${hogares.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogares, poblacion)}%)</span></div>
-                        <div><b>Hogares NBI:</b> ${hogaresNBI.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogaresNBI, poblacion)}%)</span></div>
-                        <div><b>Pob. Cobertura Pública Excl:</b> ${datos.sin_cobertura?.toLocaleString('es-AR') || '0'}
-                        <span style="color:gray">(${datos.porcentaje_sin_cobertura?.toFixed(2) || '0'}%)</span>
-                        </div>
-                    </div>
-                `;
-
-                document.getElementById('zona-titulo').textContent = `Población de Zona ${id}`;
-                document.getElementById('zona-datos').innerHTML = zonaInfoHtml;
-                zonaInfoPanel.style.display = 'flex';
-                allZonesSummaryPanel.style.display = 'none'; 
-
-                mostrarEfectoresPorZona(id);
-            }
-
-            function crearPopupCentroSalud(datos) {
-                const tipo = (datos.tipo || '').toLowerCase();
-                const nombre = (datos.nombre || '').toLowerCase();
-
-                const isHospital = tipo.includes('hospital');
-                const isHPA = tipo.includes('hpa');
-                const isEfectorEspecialA = nombre.includes('padre la monaca');
-                const isEfectorEspecialB = [
-                    'medicina preventiva',
-                    'dem',
-                    'secretaría de salud',
-                    'secretaria de salud',
-                    'salud mental',
-                    'adicciones',
-                    'pec'
-                ].some(keyword => nombre.includes(keyword) || tipo.includes(keyword));
-
-                const nombreLimpio = (datos.nombre || 'Centro de Salud').split('#')[0].trim();
-
-                if (isHospital || isHPA || isEfectorEspecialA || isEfectorEspecialB) {
-                    return `
-                        <div style="font-family: sans-serif; min-width: 240px;">
-                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                ${nombreLimpio}
-                            </div>
-                            <div style="font-size: 13px; line-height: 1.4;">
-                                <div><b>Institución:</b> ${nombreLimpio}</div>
-                                <div><b>Tipo:</b> ${datos.tipo || 'S/D'}</div>
-                                <div><b>Dirección:</b> ${datos.direccion || 'S/D'}</div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    const poblacionFormatted = datos.poblacion?.toLocaleString('es-AR') || '0';
-                    const sinCoberturaFormatted = datos.sin_cobertura?.toLocaleString('es-AR') || '0';
-                    const mujeresFormatted = datos.mujeres?.toLocaleString('es-AR') || '0';
-                    const hombresFormatted = datos.hombres?.toLocaleString('es-AR') || '0';
-                    const hogaresFormatted = datos.hogares?.toLocaleString('es-AR') || '0';
-                    const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
-                    const porcentajeSinCoberturaFormatted = 
-                        !isNaN(parseFloat(datos.porcentaje_sin_cobertura))
-                            ? parseFloat(datos.porcentaje_sin_cobertura).toFixed(2)
-                            : '0';
-
-
-                    return `
-                        <div style="font-family: sans-serif; min-width: 240px;">
-                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
-                                ${nombreLimpio}
-                            </div>
-                            <div style="font-size: 24px; font-weight: 600; text-align: center; color: #005288; margin-bottom: 8px;">
-                                ${poblacionFormatted}
-                            </div>
-                            <div style="font-size: 13px; line-height: 1.4;">
-                                <div><b>Institución:</b> ${nombreLimpio}</div>
-                                <div><b>Tipo:</b> ${datos.tipo || 'S/D'}</div>
-                                <div><b>Dirección:</b> ${datos.direccion || 'S/D'}</div>
-                                <div><b>Pob. Cobertura Pública Excl:</b> ${sinCoberturaFormatted}
-                                    <span style="color:gray">(${porcentajeSinCoberturaFormatted}%)</span>
-                                </div>
-                                <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeresFormatted} <span style="color:gray">(${porcentaje(datos.mujeres, datos.poblacion)}%)</span></div>
-                                <div><b style="color:#3C5AB7;">Varones:</b> ${hombresFormatted} <span style="color:gray">(${porcentaje(datos.hombres, datos.poblacion)}%)</span></div>
-                                <div><b>Hogares:</b> ${hogaresFormatted} <span style="color:gray">(${porcentaje(datos.hogares, datos.poblacion)}%)</span></div>
-                                <div><b>Hogares NBI:</b> ${hogaresNBIFormatted} <span style="color:gray">(${porcentaje(datos.hogares_nbi, datos.poblacion)}%)</span></div>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
 
 
             function porcentaje(parte, total) {
