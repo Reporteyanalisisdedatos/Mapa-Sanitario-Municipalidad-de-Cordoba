@@ -903,9 +903,10 @@
                     const hogaresFormatted = datos.hogares?.toLocaleString('es-AR') || '0';
                     const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
                     const porcentajeSinCoberturaFormatted = 
-                        (typeof datos.porcentaje_sin_cobertura === 'number') 
-                            ? datos.porcentaje_sin_cobertura.toFixed(2) 
+                        !isNaN(parseFloat(datos.porcentaje_sin_cobertura))
+                            ? parseFloat(datos.porcentaje_sin_cobertura).toFixed(2)
                             : '0';
+
 
                     return `
                         <div style="font-family: sans-serif; min-width: 240px;">
