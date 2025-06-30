@@ -897,11 +897,15 @@
                     `;
                 } else {
                     const poblacionFormatted = datos.poblacion?.toLocaleString('es-AR') || '0';
-                    const sinCoberturaFormatted = datos["Pob. Cobertura Publica Exclusiva"]?.toLocaleString('es-AR') || '0';
+                    const sinCoberturaFormatted = datos.sin_cobertura?.toLocaleString('es-AR') || '0';
                     const mujeresFormatted = datos.mujeres?.toLocaleString('es-AR') || '0';
                     const hombresFormatted = datos.hombres?.toLocaleString('es-AR') || '0';
                     const hogaresFormatted = datos.hogares?.toLocaleString('es-AR') || '0';
                     const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
+                    const porcentajeSinCoberturaFormatted = 
+                        (typeof datos.porcentaje_sin_cobertura === 'number') 
+                            ? datos.porcentaje_sin_cobertura.toFixed(2) 
+                            : '0';
 
                     return `
                         <div style="font-family: sans-serif; min-width: 240px;">
@@ -915,10 +919,9 @@
                                 <div><b>Institución:</b> ${nombreLimpio}</div>
                                 <div><b>Tipo:</b> ${datos.tipo || 'S/D'}</div>
                                 <div><b>Dirección:</b> ${datos.direccion || 'S/D'}</div>
-                                <div><b>Pob. Cobertura Pública Excl:</b> ${datos.sin_cobertura?.toLocaleString('es-AR') || '0'}
-                                <span style="color:gray">(${(typeof datos.porcentaje_sin_cobertura === 'number') ? datos.porcentaje_sin_cobertura.toFixed(2) : '0'}%)</span>
+                                <div><b>Pob. Cobertura Pública Excl:</b> ${sinCoberturaFormatted}
+                                    <span style="color:gray">(${porcentajeSinCoberturaFormatted}%)</span>
                                 </div>
-
                                 <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeresFormatted} <span style="color:gray">(${porcentaje(datos.mujeres, datos.poblacion)}%)</span></div>
                                 <div><b style="color:#3C5AB7;">Varones:</b> ${hombresFormatted} <span style="color:gray">(${porcentaje(datos.hombres, datos.poblacion)}%)</span></div>
                                 <div><b>Hogares:</b> ${hogaresFormatted} <span style="color:gray">(${porcentaje(datos.hogares, datos.poblacion)}%)</span></div>
@@ -928,7 +931,6 @@
                     `;
                 }
             }
-
 
 
             function porcentaje(parte, total) {
