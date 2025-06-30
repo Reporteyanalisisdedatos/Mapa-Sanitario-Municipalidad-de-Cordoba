@@ -849,7 +849,9 @@
                         <div><b style="color:#3C5AB7;">Varones:</b> ${varones.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(varones, poblacion)}%)</span></div>
                         <div><b>Hogares:</b> ${hogares.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogares, poblacion)}%)</span></div>
                         <div><b>Hogares NBI:</b> ${hogaresNBI.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(hogaresNBI, poblacion)}%)</span></div>
-                        <div><b>Pob. Cobertura Pública Excl:</b> ${cobertura.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(cobertura, poblacion)}%)</span></div>
+                        <div><b>Pob. Cobertura Pública Excl:</b> ${datos.sin_cobertura?.toLocaleString('es-AR') || '0'}
+                        <span style="color:gray">(${datos.porcentaje_sin_cobertura?.toFixed(2) || '0'}%)</span>
+                        </div>
                     </div>
                 `;
 
