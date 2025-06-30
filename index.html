@@ -833,6 +833,81 @@
                     }
                 }).addTo(map);
             }
+            function crearPopupCentroSalud(datos) {
+                const tipo = (datos.tipo || '').toLowerCase();
+                const nombre = (datos.nombre || '').toLowerCase();
+
+                const nombresEspeciales = [
+                    'medicina preventiva',
+                    'dem',
+                    'secretaría de salud',
+                    'secretaria de salud',
+                    'adicciones',
+                    'salud mental',
+                    'pec',
+                    'direccion de calidad alimentaria',
+                    'direccion de emergencias medicas 107',
+                    'direccion de epidemiologia',
+                    'laboratorio farmaceutico municipal',
+                    'telesalud'
+                ];
+
+                const isHospital = tipo.includes('hospital');
+                const isHPA = tipo.includes('hpa');
+                const isEfectorEspecialA = nombre.includes('padre la monaca');
+                const isEfectorEspecialB = nombresEspeciales.some(keyword => nombre.includes(keyword));
+
+                const nombreLimpio = (datos.nombre || 'Centro de Salud').split('#')[0].trim();
+
+                if (isHospital || isHPA || isEfectorEspecialA || isEfectorEspecialB) {
+                    return `
+                        <div style="font-family: sans-serif; min-width: 240px;">
+                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                ${nombreLimpio}
+                            </div>
+                            <div style="font-size: 13px; line-height: 1.4;">
+                                <div><b>Institución:</b> ${nombreLimpio}</div>
+                                <div><b>Tipo:</b> ${datos.tipo || 'S/D'}</div>
+                                <div><b>Dirección:</b> ${datos.direccion || 'S/D'}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const poblacionFormatted = datos.poblacion?.toLocaleString('es-AR') || '0';
+                    const sinCoberturaFormatted = datos.sin_cobertura?.toLocaleString('es-AR') || '0';
+                    const mujeresFormatted = datos.mujeres?.toLocaleString('es-AR') || '0';
+                    const hombresFormatted = datos.hombres?.toLocaleString('es-AR') || '0';
+                    const hogaresFormatted = datos.hogares?.toLocaleString('es-AR') || '0';
+                    const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
+                    const porcentajeSinCoberturaFormatted = 
+                        !isNaN(parseFloat(datos.porcentaje_sin_cobertura))
+                            ? parseFloat(datos.porcentaje_sin_cobertura).toFixed(2)
+                            : '0';
+
+                    return `
+                        <div style="font-family: sans-serif; min-width: 240px;">
+                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
+                                ${nombreLimpio}
+                            </div>
+                            <div style="font-size: 24px; font-weight: 600; text-align: center; color: #005288; margin-bottom: 8px;">
+                                ${poblacionFormatted}
+                            </div>
+                            <div style="font-size: 13px; line-height: 1.4;">
+                                <div><b>Institución:</b> ${nombreLimpio}</div>
+                                <div><b>Tipo:</b> ${datos.tipo || 'S/D'}</div>
+                                <div><b>Dirección:</b> ${datos.direccion || 'S/D'}</div>
+                                <div><b>Pob. Cobertura Pública Excl:</b> ${sinCoberturaFormatted}
+                                    <span style="color:gray">(${porcentajeSinCoberturaFormatted}%)</span>
+                                </div>
+                                <div><b style="color:#E5B8D9;">Mujeres:</b> ${mujeresFormatted} <span style="color:gray">(${porcentaje(datos.mujeres, datos.poblacion)}%)</span></div>
+                                <div><b style="color:#3C5AB7;">Varones:</b> ${hombresFormatted} <span style="color:gray">(${porcentaje(datos.hombres, datos.poblacion)}%)</span></div>
+                                <div><b>Hogares:</b> ${hogaresFormatted} <span style="color:gray">(${porcentaje(datos.hogares, datos.poblacion)}%)</span></div>
+                                <div><b>Hogares NBI:</b> ${hogaresNBIFormatted} <span style="color:gray">(${porcentaje(datos.hogares_nbi, datos.poblacion)}%)</span></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
 
 
 
