@@ -879,10 +879,10 @@
                     const hombresFormatted = datos.hombres?.toLocaleString('es-AR') || '0';
                     const hogaresFormatted = datos.hogares?.toLocaleString('es-AR') || '0';
                     const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
-                    const porcentajeSinCoberturaFormatted = 
-                        !isNaN(parseFloat((datos.porcentaje_sin_cobertura + '').replace(',', '.')))
-                            ? parseFloat((datos.porcentaje_sin_cobertura + '').replace(',', '.')).toFixed(2)
-                            : '0';
+                    const porcentajeSinCoberturaFormatted =
+                    !isNaN(parseFloat((datos.porcentaje_sin_cobertura + '').replace(',', '.')))
+                        ? parseFloat((datos.porcentaje_sin_cobertura + '').replace(',', '.')).toFixed(2)
+                        : '0';
                     return `
                         <div style="font-family: sans-serif; min-width: 240px;">
                             <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #005288; text-align: center;">
