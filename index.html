@@ -257,6 +257,11 @@
                 0px 0px 5px rgba(255, 255, 255, 0.7);  
         }
     </style>
+        <!-- Leaflet MarkerCluster -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+        <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
 </head>
 <body>
     <div id="page-header">
@@ -700,63 +705,66 @@
                     map.removeLayer(capaEfectores);
                 }
 
-                capaEfectores = L.geoJSON(efectoresData, {
-                    pointToLayer: (feature, latlng) => {
-                        const props = feature.properties;
-                        const nombre = (props.Centro || '').toLowerCase();
-                        const tipo = (props.Tipo || '').toLowerCase();
+                // Agrupar efectores por coordenadas exactas
+                const agrupados = {};
+                efectoresData.forEach((feature) => {
+                    const coords = feature.geometry.coordinates.join(',');
+                    if (!agrupados[coords]) agrupados[coords] = [];
+                    agrupados[coords].push(feature);
+                });
 
-                        let icono = iconoCentroSalud;
+                capaEfectores = L.layerGroup();
 
-                        const nombresEspeciales = [
-                            'medicina preventiva',
-                            'dem',
-                            'secretaría de salud',
-                            'secretaria de salud',
-                            'adicciones',
-                            'salud mental',
-                            'pec',
-                            'direccion de calidad alimentaria',
-                            'direccion de emergencias medicas 107',
-                            'direccion de epidemiologia',
-                            'laboratorio farmaceutico municipal',
-                            'telesalud'
-                        ];
+                for (const [coordStr, features] of Object.entries(agrupados)) {
+                    const [lng, lat] = coordStr.split(',').map(parseFloat);
 
-                        if (
-                            tipo.includes('hospital') ||
-                            tipo.includes('hpa') ||
-                            nombre.includes('padre la monaca')
-                        ) {
-                            icono = iconoHPA;
-                        } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
-                            icono = iconoEfectores;
-                        }
+                    // Determinar icono en base a tipo/nombre
+                    const tipos = features.map(f => f.properties.Tipo?.toLowerCase() || '');
+                    const nombres = features.map(f => f.properties.Centro?.toLowerCase() || '');
 
-                        return L.marker(latlng, { icon: icono });
-                    },
-                    onEachFeature: (feature, layer) => {
-                        const props = feature.properties;
+                    const nombresEspeciales = [
+                        'medicina preventiva', 'dem', 'secretaría de salud', 'secretaria de salud',
+                        'adicciones', 'salud mental', 'pec',
+                        'direccion de calidad alimentaria',
+                        'direccion de emergencias medicas 107',
+                        'direccion de epidemiologia',
+                        'laboratorio farmaceutico municipal',
+                        'telesalud'
+                    ];
 
-                        const datosCentro = {
-                            nombre: props.Centro,
-                            tipo: props.Tipo,
-                            direccion: props.Direccion,
-                            institucion: props.institucion || '',
-
-                            poblacion: props.PoblacionTotal ?? 0,
-                            mujeres: props.Mujeres ?? 0,
-                            hombres: props.Varones ?? 0,
-                            sin_cobertura: props.PoblacionSinCobertura ?? 0,
-                            porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
-                            hogares: props.Hogares ?? 0,
-                            hogares_nbi: props.HogaresNBI ?? 0
-                        };
-
-                        const popupContent = crearPopupCentroSalud(datosCentro);
-                        layer.bindPopup(popupContent);
+                    let icono = iconoCentroSalud;
+                    if (tipos.some(t => t.includes('hospital') || t.includes('hpa')) || 
+                        nombres.some(n => n.includes('padre la monaca'))) {
+                        icono = iconoHPA;
+                    } else if (nombres.some(n => nombresEspeciales.some(e => n.includes(e)))) {
+                        icono = iconoEfectores;
                     }
-                }).addTo(map);
+
+                    // Crear un popup único con todos los efectores de esa coordenada
+                    const popupHTML = features.map(f => {
+                        const p = f.properties;
+                        const datosCentro = {
+                            nombre: p.Centro,
+                            tipo: p.Tipo,
+                            direccion: p.Direccion,
+                            institucion: p.institucion || '',
+                            poblacion: p.PoblacionTotal ?? 0,
+                            mujeres: p.Mujeres ?? 0,
+                            hombres: p.Varones ?? 0,
+                            sin_cobertura: p.PoblacionSinCobertura ?? 0,
+                            porcentaje_sin_cobertura: p.PorcentajeSinCobertura ?? 0,
+                            hogares: p.Hogares ?? 0,
+                            hogares_nbi: p.HogaresNBI ?? 0
+                        };
+                        return crearPopupCentroSalud(datosCentro);
+                    }).join('<hr style="margin:8px 0;">');
+
+                    const marker = L.marker([lat, lng], { icon: icono });
+                    marker.bindPopup(`<div>${popupHTML}</div>`);
+                    capaEfectores.addLayer(marker);
+                }
+
+                capaEfectores.addTo(map);
             }
 
             function mostrarEfectoresPorZona(zonaId) {
