@@ -687,6 +687,8 @@
                 }
             }
             
+            /* BLOQUE MODIFICADO PARA USAR DATOS DIRECTAMENTE DE CADA EFECTOR Y SUMAR INFO DE LA ZONA */
+
             function mostrarTodosEfectores() {
                 if (!efectoresData) {
                     console.error('❌ efectoresData no está cargado todavía.');
@@ -769,6 +771,41 @@
                     return parseInt(props.Zona) === zonaId;
                 });
 
+                // 🧮 SUMA DATOS DE LA ZONA PARA MOSTRAR EN LA TARJETA
+                const zonaStats = efectoresFiltrados.reduce((acc, e) => {
+                    const p = e.properties;
+                    acc.poblacion += p.PoblacionTotal || 0;
+                    acc.mujeres += p.Mujeres || 0;
+                    acc.hombres += p.Varones || 0;
+                    acc.hogares += p.Hogares || 0;
+                    acc.hogares_nbi += p.HogaresNBI || 0;
+                    acc.sin_cobertura += p.PoblacionSinCobertura || 0;
+                    return acc;
+                }, {
+                    poblacion: 0,
+                    mujeres: 0,
+                    hombres: 0,
+                    hogares: 0,
+                    hogares_nbi: 0,
+                    sin_cobertura: 0
+                });
+
+                document.getElementById('zona-datos').innerHTML = `
+                    <div style="font-size: 28px; font-weight: bold; text-align: center; color: #005288; margin-bottom: 10px;">
+                        ${zonaStats.poblacion.toLocaleString('es-AR')}
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.5;">
+                        <div><b style="color:#E5B8D9;">Mujeres:</b> ${zonaStats.mujeres.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(zonaStats.mujeres, zonaStats.poblacion)}%)</span></div>
+                        <div><b style="color:#3C5AB7;">Varones:</b> ${zonaStats.hombres.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(zonaStats.hombres, zonaStats.poblacion)}%)</span></div>
+                        <div><b>Hogares:</b> ${zonaStats.hogares.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(zonaStats.hogares, zonaStats.poblacion)}%)</span></div>
+                        <div><b>Hogares NBI:</b> ${zonaStats.hogares_nbi.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(zonaStats.hogares_nbi, zonaStats.poblacion)}%)</span></div>
+                        <div><b>Pob. Cobertura Pública Excl:</b> ${zonaStats.sin_cobertura.toLocaleString('es-AR')} <span style="color:gray">(${porcentaje(zonaStats.sin_cobertura, zonaStats.poblacion)}%)</span></div>
+                    </div>
+                `;
+                document.getElementById('zona-titulo').textContent = `Población de Zona ${zonaId}`;
+                zonaInfoPanel.style.display = 'flex';
+                allZonesSummaryPanel.style.display = 'none';
+
                 capaEfectores = L.geoJSON(efectoresFiltrados, {
                     pointToLayer: (feature, latlng) => {
                         const props = feature.properties;
@@ -827,6 +864,7 @@
                     }
                 }).addTo(map);
             }
+
             function crearPopupCentroSalud(datos) {
                 const tipo = (datos.tipo || '').toLowerCase();
                 const nombre = (datos.nombre || '').toLowerCase();
