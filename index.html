@@ -700,22 +700,43 @@
                     map.removeLayer(capaEfectores);
                 }
 
-                capaEfectores = L.geoJSON(efectoresData, {
+                // Agrupar efectores por coordenadas redondeadas
+                const efectoresAgrupados = {};
+                efectoresData.forEach(feature => {
+                    const coords = feature.geometry?.coordinates;
+                    if (!coords) return;
+
+                    const key = `${coords[0].toFixed(6)}|${coords[1].toFixed(6)}`;
+                    if (!efectoresAgrupados[key]) {
+                        efectoresAgrupados[key] = [];
+                    }
+                    efectoresAgrupados[key].push(feature);
+                });
+
+                const featuresAgrupadas = Object.entries(efectoresAgrupados).map(([key, grupo]) => {
+                    const [lng, lat] = key.split('|').map(Number);
+                    return {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [lng, lat],
+                        },
+                        properties: {
+                            grupoEfectores: grupo.map(f => f.properties)
+                        }
+                    };
+                });
+
+                capaEfectores = L.geoJSON(featuresAgrupadas, {
                     pointToLayer: (feature, latlng) => {
-                        const props = feature.properties;
+                        const props = feature.properties.grupoEfectores[0];
                         const nombre = (props.Centro || '').toLowerCase();
                         const tipo = (props.Tipo || '').toLowerCase();
 
                         let icono = iconoCentroSalud;
-
                         const nombresEspeciales = [
-                            'medicina preventiva',
-                            'dem',
-                            'secretaría de salud',
-                            'secretaria de salud',
-                            'adicciones',
-                            'salud mental',
-                            'pec',
+                            'medicina preventiva', 'dem', 'secretaría de salud', 'secretaria de salud',
+                            'adicciones', 'salud mental', 'pec',
                             'direccion de calidad alimentaria',
                             'direccion de emergencias medicas 107',
                             'direccion de epidemiologia',
@@ -723,11 +744,7 @@
                             'telesalud'
                         ];
 
-                        if (
-                            tipo.includes('hospital') ||
-                            tipo.includes('hpa') ||
-                            nombre.includes('padre la monaca')
-                        ) {
+                        if (tipo.includes('hospital') || tipo.includes('hpa') || nombre.includes('padre la monaca')) {
                             icono = iconoHPA;
                         } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
                             icono = iconoEfectores;
@@ -736,28 +753,28 @@
                         return L.marker(latlng, { icon: icono });
                     },
                     onEachFeature: (feature, layer) => {
-                        const props = feature.properties;
-
-                        const datosCentro = {
-                            nombre: props.Centro,
-                            tipo: props.Tipo,
-                            direccion: props.Direccion,
-                            institucion: props.institucion || '',
-
-                            poblacion: props.PoblacionTotal ?? 0,
-                            mujeres: props.Mujeres ?? 0,
-                            hombres: props.Varones ?? 0,
-                            sin_cobertura: props.PoblacionSinCobertura ?? 0,
-                            porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
-                            hogares: props.Hogares ?? 0,
-                            hogares_nbi: props.HogaresNBI ?? 0
-                        };
-
-                        const popupContent = crearPopupCentroSalud(datosCentro);
-                        layer.bindPopup(popupContent);
+                        const efectores = feature.properties.grupoEfectores;
+                        const popups = efectores.map(props => {
+                            const datosCentro = {
+                                nombre: props.Centro,
+                                tipo: props.Tipo,
+                                direccion: props.Direccion,
+                                institucion: props.institucion || '',
+                                poblacion: props.PoblacionTotal ?? 0,
+                                mujeres: props.Mujeres ?? 0,
+                                hombres: props.Varones ?? 0,
+                                sin_cobertura: props.PoblacionSinCobertura ?? 0,
+                                porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
+                                hogares: props.Hogares ?? 0,
+                                hogares_nbi: props.HogaresNBI ?? 0
+                            };
+                            return crearPopupCentroSalud(datosCentro);
+                        });
+                        layer.bindPopup(popups.join('<hr style="margin:6px 0">'));
                     }
                 }).addTo(map);
             }
+
 
             function mostrarEfectoresPorZona(zonaId) {
                 if (!efectoresData) {
