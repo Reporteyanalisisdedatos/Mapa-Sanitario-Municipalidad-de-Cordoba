@@ -733,9 +733,6 @@
                     },
                     onEachFeature: (feature, layer) => {
                         const props = feature.properties;
-                        const nombre = (props.Centro || '').toLowerCase();
-                        const zonaId = parseInt(props.Zona);
-                        const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === zonaId);
 
                         const datosCentro = {
                             nombre: props.Centro,
@@ -743,13 +740,13 @@
                             direccion: props.Direccion,
                             institucion: props.institucion || '',
 
-                            poblacion: infoZona?.PoblacionTotal ?? 0,
-                            mujeres: infoZona?.Mujeres ?? 0,
-                            hombres: infoZona?.Varones ?? 0,
-                            sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
+                            poblacion: props.PoblacionTotal ?? 0,
+                            mujeres: props.Mujeres ?? 0,
+                            hombres: props.Varones ?? 0,
+                            sin_cobertura: props.PoblacionSinCobertura ?? 0,
                             porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
-                            hogares: infoZona?.Hogares ?? 0,
-                            hogares_nbi: infoZona?.HogaresNBI ?? 0
+                            hogares: props.Hogares ?? 0,
+                            hogares_nbi: props.HogaresNBI ?? 0
                         };
 
                         const popupContent = crearPopupCentroSalud(datosCentro);
@@ -809,9 +806,6 @@
                     },
                     onEachFeature: (feature, layer) => {
                         const props = feature.properties;
-                        const nombre = (props.Centro || '').toLowerCase();
-                        const zonaId = parseInt(props.Zona);
-                        const infoZona = datosZonasPoblacion.find(z => parseInt(z.Zona) === zonaId);
 
                         const datosCentro = {
                             nombre: props.Centro,
@@ -819,13 +813,13 @@
                             direccion: props.Direccion,
                             institucion: props.institucion || '',
 
-                            poblacion: infoZona?.PoblacionTotal ?? 0,
-                            mujeres: infoZona?.Mujeres ?? 0,
-                            hombres: infoZona?.Varones ?? 0,
-                            sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                            porcentaje_sin_cobertura: infoZona?.PorcentajeSinCobertura ?? 0,
-                            hogares: infoZona?.Hogares ?? 0,
-                            hogares_nbi: infoZona?.HogaresNBI ?? 0
+                            poblacion: props.PoblacionTotal ?? 0,
+                            mujeres: props.Mujeres ?? 0,
+                            hombres: props.Varones ?? 0,
+                            sin_cobertura: props.PoblacionSinCobertura ?? 0,
+                            porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
+                            hogares: props.Hogares ?? 0,
+                            hogares_nbi: props.HogaresNBI ?? 0
                         };
 
                         const popupContent = crearPopupCentroSalud(datosCentro);
