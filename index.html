@@ -615,11 +615,12 @@
                                     layer.on('click', (e) => {
                                         mostrarZonaInfo(feature, zona_id_click, layer);
                                         map.fitBounds(layer.getBounds(), { padding: [20, 20] });
-                                        returnButton.style.display = 'block'; 
                                         allZonesSummaryPanel.style.display = 'none'; 
                                     });
                                 },
                             }).addTo(map);
+
+                            returnButton.style.display = 'block'; 
 
                             const layerForBounds = L.geoJSON(selectedFeature);
                             if (layerForBounds) {
