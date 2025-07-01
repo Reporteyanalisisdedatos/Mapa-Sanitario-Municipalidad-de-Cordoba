@@ -747,7 +747,7 @@
                             mujeres: infoZona?.Mujeres ?? 0,
                             hombres: infoZona?.Varones ?? 0,
                             sin_cobertura: infoZona?.PoblacionSinCobertura ?? 0,
-                            porcentaje_sin_cobertura: infoZona?.PorcentajeSinCobertura ?? 0,
+                            porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
                             hogares: infoZona?.Hogares ?? 0,
                             hogares_nbi: infoZona?.HogaresNBI ?? 0
                         };
@@ -879,7 +879,10 @@
                     const hombresFormatted = datos.hombres?.toLocaleString('es-AR') || '0';
                     const hogaresFormatted = datos.hogares?.toLocaleString('es-AR') || '0';
                     const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
-                    const porcentajeSinCoberturaFormatted = datos.porcentaje_sin_cobertura || '0%';
+                    const porcentajeSinCoberturaFormatted = 
+                        datos.porcentaje_sin_cobertura !== undefined && datos.porcentaje_sin_cobertura !== null
+                            ? datos.porcentaje_sin_cobertura + '%'
+                            : '0%';
 
                     return `
                         <div style="font-family: sans-serif; min-width: 240px;">
