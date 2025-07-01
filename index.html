@@ -626,9 +626,12 @@
                             if (layerForBounds) {
                                 map.fitBounds(layerForBounds.getBounds(), { padding: [20, 20] });
                             }
-
+                            
+                            
                             mostrarEfectoresPorZona(parseInt(selectedValue));
-                            mostrarZonaInfo(selectedFeature, parseInt(selectedValue), null); 
+                            allZonesSummaryPanel.style.display = 'none';
+                            mostrarEfectoresPorZona(zona_id_click);  // ✅ ESTA FUNCIÓN YA HACE TODO
+ 
                             
                             returnButton.style.display = 'block'; // Mostrar botón al seleccionar una zona específica
                             allZonesSummaryPanel.style.display = 'none'; 
