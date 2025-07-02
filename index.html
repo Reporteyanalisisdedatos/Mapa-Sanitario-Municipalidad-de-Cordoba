@@ -66,12 +66,13 @@
 
         #filters-container {
             width: 100%;
-            position: relative;
+            position: fixed;
+            top: 95px;
+            left: 0;
             background-color: #f8f8f8;
             padding: 15px 20px;
             box-sizing: border-box;
-            z-index: 999;
-            margin-top: 95px; /* Deja espacio para el header fijo */
+            z-index: 1000;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: row;
@@ -132,8 +133,9 @@
         }
 
         #map {
-            height: calc(100vh - 95px - 140px); /* Ajusta si es necesario */
+            height: calc(100vh - 210px); /* 95px del header + 115px de filtros aprox */
             width: 100%;
+            margin-top: 210px; /* para que no quede tapado por los filtros */
         }
 
         /* Panel de info de ZONA individual */
