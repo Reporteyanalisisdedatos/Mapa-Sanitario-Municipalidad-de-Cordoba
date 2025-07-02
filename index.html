@@ -21,28 +21,30 @@
         }
 
         #header-blue {
-            background-color: #005288;
-            color: white;
-            padding: 20px 20px;
-            min-height: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: sans-serif;
+        background-color: #005288;
+        color: white;
+        padding: 20px 20px;
+        min-height: 50px;
+        font-family: sans-serif;
+        position: relative;  /* Necesario para centrar el título */
         }
 
         #header-title {
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            width: 100%;
-            position: absolute;
-            left: 0;
-            right: 0;
-            margin: auto;
+        font-size: 24px;
+        font-weight: bold;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
         }
 
         #header-logos {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             align-items: center;
         }
@@ -266,19 +268,19 @@
     </style>
 </head>
 <body>
-    <div id="page-header">
-        <div id="header-blue">
+    <div id="header-blue">
             <div id="header-title">Mapa Sanitario - Municipalidad de Córdoba</div>
             <div id="header-logos">
                 <div class="logo-container">
                     <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/SecreB.png" alt="Secretaría de Salud" />
                 </div>
                 <div class="logo-container">
-                    
-                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HorizontalCTWhite.png" alt="Coordinación Tecnológica" alt="Coordinación Tecnológica" />
+                    <img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/HorizontalCTWhite.png" alt="Coordinación Tecnológica" />
                 </div>
             </div>
         </div>
+
+    
         <div id="header-bars">
             <div class="bar" style="background-color: #FFDA63;"></div>
             <div class="bar" style="background-color: #DC3545;"></div>
