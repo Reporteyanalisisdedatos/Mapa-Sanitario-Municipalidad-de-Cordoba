@@ -298,6 +298,7 @@
             <div class="filter-group-content">
                 <label><input type="checkbox" id="chkDEPARTAMENTOS" /> DEPARTAMENTOS</label>
                 <label><input type="checkbox" id="chkLOCALIDADES" /> LOCALIDADES</label>
+                <label><input type="checkbox" id="chkENTEMETROPOLITANO" /> ENTE METROPOLITANO</label>
             </div>
         </div>
 
@@ -415,6 +416,9 @@
                 if (layerName === 'SECCIONALES' && props.hasOwnProperty('nombre_seccional')) { // Ejemplo, si seccionales tiene una propiedad diferente
                     return props.nombre_seccional;
                 }
+                if (layerName === 'ENTEMETROPOLITANO' && props.hasOwnProperty('localidad')) {
+                    return props.localidad;
+                }
                 if (layerName === 'DEPARTAMENTOS' && props.hasOwnProperty('nombre_departamento')) { // Ejemplo
                     return props.nombre_departamento;
                 }
@@ -513,6 +517,7 @@
                 'SECCIONALES',
                 'DEPARTAMENTOS',
                 'LOCALIDADES',
+                'ENTEMETROPOLITANO'
             ];
             const urlBase = "https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/";
             archivosCapas.forEach((nombre) => {
@@ -668,6 +673,8 @@
                 toggleLayer('CIRCUITO', e.target.checked);
             document.getElementById('chkSECCIONALES').onchange = (e) =>
                 toggleLayer('SECCIONALES', e.target.checked);
+            document.getElementById('chkENTEMETROPOLITANO').onchange = (e) =>
+                toggleLayer('ENTEMETROPOLITANO', e.target.checked);    
             document.getElementById('chkDEPARTAMENTOS').onchange = (e) =>
                 toggleLayer('DEPARTAMENTOS', e.target.checked);
             document.getElementById('chkLOCALIDADES').onchange = (e) =>
