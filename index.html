@@ -572,77 +572,69 @@
                     if (capas.ZONA && map.hasLayer(capas.ZONA)) {
                         map.removeLayer(capas.ZONA);
                     }
-                    zonaInfoPanel.style.display = 'none'; 
-                    allZonesSummaryPanel.style.display = 'none'; 
+
+                    zonaInfoPanel.style.display = 'none';
+                    allZonesSummaryPanel.style.display = 'none';
 
                     if (selectedValue === 'all') {
                         capas.ZONA = L.geoJSON(
                             {
                                 type: 'FeatureCollection',
-                                features: allZonasFeatures,
+                                features: allZonasFeatures
                             },
                             {
                                 style: estilos,
                                 onEachFeature: (feature, layer) => {
-                                    const zona_id_str_click = (feature.properties.name || '')
-                                        .replace('ZONA ', '').trim();
-                                    const zona_id_click = parseInt(zona_id_str_click) || 0;
-                                    layer.on('click', (e) => {
-                                        selZONA.value = zona_id_str_click; 
-                                        mostrarZonaInfo(feature, zona_id_click, layer);
+                                    const zona_id_str = (feature.properties.name || '').replace('ZONA ', '').trim();
+                                    const zona_id = parseInt(zona_id_str) || 0;
+
+                                    layer.on('click', () => {
+                                        selZONA.value = zona_id_str;
+                                        mostrarEfectoresPorZona(zona_id);
                                         map.fitBounds(layer.getBounds(), { padding: [20, 20] });
-                                        returnButton.style.display = 'block'; 
-                                        allZonesSummaryPanel.style.display = 'none'; 
+                                        returnButton.style.display = 'block';
+                                        zonaInfoPanel.style.display = 'flex';
+                                        allZonesSummaryPanel.style.display = 'none';
                                     });
-                                },
+                                }
                             }
                         ).addTo(map);
+
                         mostrarTodosEfectores();
                         mostrarResumenTodasZonas();
-                        map.setView([-31.42, -64.18], 11); 
-                        returnButton.style.display = 'block'; // Mostrar botón cuando 'Todas las Zonas' está seleccionado
+                        map.setView([-31.42, -64.18], 11);
+                        returnButton.style.display = 'block';
+
                     } else if (selectedValue) {
                         const selectedFeature = allZonasFeatures.find(f =>
                             (f.properties.name || '').replace('ZONA ', '').trim() === selectedValue
                         );
+
                         if (selectedFeature) {
+                            const zona_id = parseInt(selectedValue);
                             capas.ZONA = L.geoJSON(selectedFeature, {
                                 style: estilos,
                                 onEachFeature: (feature, layer) => {
-                                    const zona_id_str_click = (feature.properties.name || '')
-                                        .replace('ZONA ', '').trim();
-                                    const zona_id_click = parseInt(zona_id_str_click) || 0;
-                                    layer.on('click', (e) => {
-                                        mostrarZonaInfo(feature, zona_id_click, layer);
+                                    layer.on('click', () => {
+                                        mostrarEfectoresPorZona(zona_id);
                                         map.fitBounds(layer.getBounds(), { padding: [20, 20] });
-                                        allZonesSummaryPanel.style.display = 'none'; 
+                                        zonaInfoPanel.style.display = 'flex';
+                                        allZonesSummaryPanel.style.display = 'none';
                                     });
-                                },
+                                }
                             }).addTo(map);
 
-                            returnButton.style.display = 'block'; 
-
-                            const layerForBounds = L.geoJSON(selectedFeature);
-                            if (layerForBounds) {
-                                map.fitBounds(layerForBounds.getBounds(), { padding: [20, 20] });
-                            }
-                            
-                            
-                            mostrarEfectoresPorZona(parseInt(selectedValue));
-                            allZonesSummaryPanel.style.display = 'none';
-                            mostrarEfectoresPorZona(zona_id_click);  // ✅ ESTA FUNCIÓN YA HACE TODO
- 
-                            
-                            returnButton.style.display = 'block'; // Mostrar botón al seleccionar una zona específica
-                            allZonesSummaryPanel.style.display = 'none'; 
+                            map.fitBounds(L.geoJSON(selectedFeature).getBounds(), { padding: [20, 20] });
+                            mostrarEfectoresPorZona(zona_id);
+                            returnButton.style.display = 'block';
                         }
+
                     } else {
-                        // Si se selecciona la opción "-- Seleccionar Zona --"
                         mostrarTodosEfectores();
                         zonaInfoPanel.style.display = 'none';
-                        returnButton.style.display = 'none'; // Ocultar el botón si no hay zona seleccionada
-                        allZonesSummaryPanel.style.display = 'none'; 
-                        map.setView([-31.42, -64.18], 11); 
+                        returnButton.style.display = 'none';
+                        allZonesSummaryPanel.style.display = 'none';
+                        map.setView([-31.42, -64.18], 11);
                     }
                 };
             }
