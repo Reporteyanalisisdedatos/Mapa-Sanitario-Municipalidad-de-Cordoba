@@ -1006,7 +1006,14 @@
                 }
 
                 allZonesList.innerHTML = '';
-                allZonesSummaryPanel.querySelector('h3').textContent = 'Población por Zona';
+                const panelHeader = allZonesSummaryPanel.querySelector('h3');
+                panelHeader.innerHTML = `
+                    Población por Zona<br>
+                    <span style="font-size: 13px; font-weight: normal; color: #444;">
+                        Población Total de capital: 1.505.099
+                    </span>
+                `;
+
                 totalCapitalPopulationDiv.style.display = 'none';
 
                 const zonasOrdenadas = [...datosZonasPoblacion].sort((a, b) => parseInt(a.Zona) - parseInt(b.Zona));
@@ -1031,7 +1038,7 @@
         });
     </script>
 <div id="leyenda-iconos">
-    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/CS.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Centro de Salud</div>
+    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/CS.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Centros de Salud</div>
     <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/HOSP-HPA-PLM.png" style="height: 22px; vertical-align: middle; margin-right: 8px;"> Hospitales Municipales, HPA, Padre La Monaca</div>
     <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/EFECTORES.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Efectores Municipales</div>
 </div>
