@@ -519,7 +519,8 @@
                 'LOCALIDADES',
                 'ENTEMETROPOLITANO'
             ];
-            const urlBase = "https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Provincia-de-C-rdoba/";
+            const urlBase ="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/";
+
             archivosCapas.forEach((nombre) => {
                 fetch(`${urlBase}${nombre}.json`)
                     .then((res) => {
@@ -1015,5 +1016,4 @@
         });
     </script>
 </body>
-</html>
 </html>
