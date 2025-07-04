@@ -6,20 +6,17 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #leyenda-iconos {
-        position: fixed;
-        top: 210px; /* justo debajo de los filtros */
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        gap: 30px;
+        position: absolute;
+        top: 220px; /* debajo de los filtros */
+        left: 20px;
         background: white;
-        padding: 10px 0;
-        z-index: 999;
+        padding: 10px 14px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         font-family: sans-serif;
         font-size: 13px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        border-top: 1px solid #ddd;
+        z-index: 1100;
+        line-height: 1.6;
         }
 
 
