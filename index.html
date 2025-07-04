@@ -6,17 +6,20 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #leyenda-iconos {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
+        position: fixed;
+        top: 210px; /* justo debajo de los filtros */
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
         background: white;
-        padding: 10px 14px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        padding: 10px 0;
+        z-index: 999;
         font-family: sans-serif;
         font-size: 13px;
-        z-index: 1100;
-        line-height: 1.6;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border-top: 1px solid #ddd;
         }
 
 
@@ -337,7 +340,11 @@
             </div>
         </div>
     </div>
-
+    <div id="leyenda-iconos">
+    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/CS.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Centros de Salud</div>
+    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/HOSP-HPA-PLM.png" style="height: 22px; vertical-align: middle; margin-right: 8px;"> Hospitales Municipales, HPA, Padre La Monaca</div>
+    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/EFECTORES.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Efectores Municipales</div>
+    </div>
     <div id="map"></div>
 
     <div id="zona-info">
@@ -1062,10 +1069,6 @@
     
         });
     </script>
-<div id="leyenda-iconos">
-    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/CS.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Centros de Salud</div>
-    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/HOSP-HPA-PLM.png" style="height: 22px; vertical-align: middle; margin-right: 8px;"> Hospitales Municipales, HPA, Padre La Monaca</div>
-    <div><img src="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/EFECTORES.png" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Efectores Municipales</div>
-</div>
+
 </body>
 </html>
