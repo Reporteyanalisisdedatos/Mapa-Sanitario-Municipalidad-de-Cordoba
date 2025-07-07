@@ -587,7 +587,68 @@
                     zonaInfoPanel.style.display = 'none';
                     allZonesSummaryPanel.style.display = 'none';
                     returnButton.style.display = 'none';
+                
+                     // 👇 PEGÁ ESTO ADENTRO DEL THEN
+                    document.getElementById('search-efector').addEventListener('input', (e) => {
+                        const texto = e.target.value.trim().toLowerCase();
+
+                        if (!texto) {
+                            mostrarTodosEfectores();
+                            return;
+                        }
+
+                        const filtrados = efectoresData.filter(feature => {
+                            const nombre = feature.properties?.Centro?.toLowerCase() || '';
+                            return nombre.includes(texto);
+                        });
+
+                        if (capaEfectores) {
+                            map.removeLayer(capaEfectores);
+                        }
+
+                        capaEfectores = L.geoJSON(filtrados, {
+                            pointToLayer: (feature, latlng) => {
+                                const props = feature.properties;
+                                const nombre = (props.Centro || '').toLowerCase();
+                                const tipo = (props.Tipo || '').toLowerCase();
+
+                                let icono = iconoCentroSalud;
+                                const nombresEspeciales = [
+                                    'medicina preventiva', 'dem', 'secretaría de salud',
+                                    'adicciones', 'pec', 'direccion de calidad alimentaria',
+                                    'epidemiologia', 'telesalud', 'padre la monaca'
+                                ];
+
+                                if (tipo.includes('hospital') || tipo.includes('hpa') || nombre.includes('padre la monaca')) {
+                                    icono = iconoHPA;
+                                } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
+                                    icono = iconoEfectores;
+                                }
+
+                                return L.marker(latlng, { icon: icono });
+                            },
+                            onEachFeature: (feature, layer) => {
+                                const props = feature.properties;
+                                const datosCentro = {
+                                    nombre: props.Centro,
+                                    tipo: props.Tipo,
+                                    direccion: props.Direccion,
+                                    institucion: props.institucion || '',
+                                    poblacion: props.PoblacionTotal ?? 0,
+                                    mujeres: props.Mujeres ?? 0,
+                                    hombres: props.Varones ?? 0,
+                                    sin_cobertura: props.PoblacionSinCobertura ?? 0,
+                                    porcentaje_sin_cobertura: props.PorcentajeSinCobertura ?? 0,
+                                    hogares: props.Hogares ?? 0,
+                                    hogares_nbi: props.HogaresNBI ?? 0
+                                };
+                                layer.bindPopup(crearPopupCentroSalud(datosCentro));
+                            }
+                        }).addTo(map);
+                    });
+
                 })
+                
                 .catch(error => {
                     console.error("Error cargando datos iniciales:", error);
                     if (error.message.includes("Failed to fetch")) {
