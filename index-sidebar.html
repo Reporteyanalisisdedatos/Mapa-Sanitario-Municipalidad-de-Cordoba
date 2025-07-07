@@ -601,7 +601,11 @@
 
                         const filtrados = efectoresData.filter(feature => {
                             const nombre = feature.properties?.Centro?.toLowerCase() || '';
-                            return nombre.includes(texto);
+                            const nombreNormalizado = nombre
+                                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                                .replace(/\bcs\b/g, 'centro de salud');
+
+                            return nombreNormalizado.includes(texto);
                         });
 
                         if (capaEfectores) {
