@@ -108,16 +108,16 @@
         .filter-group {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
             font-family: sans-serif;
-            padding: 15px 20px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            flex-grow: 1; 
-            min-width: 280px; 
-            justify-content: space-between; 
+            align-items: flex-start;
+            min-width: 180px;
+            gap: 10px;
         }
+
 
         .filter-group-title {
             font-weight: bold;
@@ -365,16 +365,16 @@
     </div>
 
     <div id="left-panel">
+        <!-- 2. BUSCADOR -->
+        <div id="search-container">
+            <input type="text" id="search-efector" placeholder="Buscar Efector..." />
+        </div>
+
         <!-- 1. LEYENDA -->
         <div id="leyenda-iconos">
             <div><img src="CS.png"> Centros de Salud</div>
             <div><img src="HOSP-HPA-PLM.png"> Hospitales Municipales, HPA, Padre La Monaca</div>
             <div><img src="EFECTORES.png"> Efectores Municipales</div>
-        </div>
-
-        <!-- 2. BUSCADOR -->
-        <div id="search-container">
-            <input type="text" id="search-efector" placeholder="Buscar Efector..." />
         </div>
 
         <!-- 3. FILTROS PROVINCIA -->
