@@ -109,10 +109,11 @@
             padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch; /* 👈 esto alinea todo al ancho completo */
             min-width: 180px;
             gap: 10px;
         }
+
 
 
         .filter-group-title {
@@ -125,10 +126,9 @@
 
         .filter-group-content {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            align-items: center; 
+            flex-direction: column;  /* 👈 uno debajo del otro */
+            align-items: flex-start; /* 👈 alinear a la izquierda */
+            gap: 10px; 
         }
 
         #filters-container label {
