@@ -284,6 +284,40 @@
                 1px 1px 3px rgba(255, 255, 255, 0.9),
                 0px 0px 5px rgba(255, 255, 255, 0.7);  
         }
+        #left-panel {
+            position: fixed;
+            top: 95px; /* debajo del header */
+            left: 0;
+            bottom: 0;
+            width: 330px;
+            background-color: #f8f8f8;
+            padding: 10px 15px;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.15);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        #map {
+            position: absolute;
+            top: 95px;
+            bottom: 0;
+            left: 330px; /* se corre para dejar lugar al panel */
+            right: 0;
+            z-index: 1;
+        }
+
+        #search-container {
+            margin-bottom: 15px;
+        }
+
+        #search-efector {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
     </style>
 </head>
 <body>
