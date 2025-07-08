@@ -1156,8 +1156,7 @@
                     const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
                     const porcentajeSinCoberturaFormatted = 
                         datos.porcentaje_sin_cobertura !== undefined && datos.porcentaje_sin_cobertura !== null
-                            ? datos.porcentaje_sin_cobertura + '%'
-                            : '0%';
+                            ? datos.porcentaje_sin_cobertura : '0%';
 
                     return `
                         <div style="font-family: sans-serif; min-width: 240px;">
