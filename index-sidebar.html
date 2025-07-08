@@ -592,7 +592,7 @@
                     document.getElementById('search-efector').addEventListener('input', (e) => {
                         let texto = e.target.value.trim().toLowerCase()
                             .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // saca acentos
-                            .replace(/\bcs\b/g, 'centro de salud') // reemplaza "cs" por "centro de salud";
+                            .replace(/\bcs\b/g, 'cs') // reemplaza "cs" por "centro de salud";
                             .replace(/\bcs[\s#°º\-]*/g, 'centro de salud ')
                             .replace(/n[°º]?\s*/g, '') // reemplaza "n°", "nº", "n " por vacío
                             .replace(/\s+/g, ' ');     // normaliza espacios dobles
