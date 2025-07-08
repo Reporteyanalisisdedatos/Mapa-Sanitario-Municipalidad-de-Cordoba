@@ -622,25 +622,39 @@
 
                         capaEfectores = L.geoJSON(filtrados, {
                             pointToLayer: (feature, latlng) => {
-                                const props = feature.properties;
-                                const nombre = (props.Centro || '').toLowerCase();
-                                const tipo = (props.Tipo || '').toLowerCase();
+                            const props = feature.properties;
+                            const nombre = (props.Centro || '').toLowerCase();
+                            const tipo = (props.Tipo || '').toLowerCase();
 
-                                let icono = iconoCentroSalud;
-                                const nombresEspeciales = [
-                                    'medicina preventiva', 'dem', 'secretaría de salud',
-                                    'adicciones', 'pec', 'direccion de calidad alimentaria',
-                                    'epidemiologia', 'telesalud', 'padre la monaca'
-                                ];
+                            let icono = iconoCentroSalud;
 
-                                if (tipo.includes('hospital') || tipo.includes('hpa') || nombre.includes('padre la monaca')) {
-                                    icono = iconoHPA;
-                                } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
-                                    icono = iconoEfectores;
-                                }
+                            const nombresEspeciales = [
+                                'medicina preventiva',
+                                'dem',
+                                'secretaría de salud',
+                                'secretaria de salud',
+                                'adicciones',
+                                'salud mental',
+                                'pec',
+                                'direccion de calidad alimentaria',
+                                'direccion de emergencias medicas 107',
+                                'direccion de epidemiologia',
+                                'laboratorio farmaceutico municipal',
+                                'telesalud',
+                                'pec los robles',
+                                'dtc villa el libertador',
+                                'pec comercial',
+                                'centro comunitario maldonado'
+                            ];
 
-                                return L.marker(latlng, { icon: icono });
-                            },
+                            if (tipo.includes('hospital') || tipo.includes('hpa') || nombre.includes('padre la monaca')) {
+                                icono = iconoHPA;
+                            } else if (nombresEspeciales.some(keyword => nombre.includes(keyword))) {
+                                icono = iconoEfectores;
+                            }
+
+                            return L.marker(latlng, { icon: icono });
+                        },
                             onEachFeature: (feature, layer) => {
                                 const props = feature.properties;
                                 const datosCentro = {
