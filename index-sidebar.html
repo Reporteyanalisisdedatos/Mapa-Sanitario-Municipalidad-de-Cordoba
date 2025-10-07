@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -403,6 +404,7 @@
             <label><input type="checkbox" id="chkCIRCUITO" /> CIRCUITOS</label>
             <label><input type="checkbox" id="chkSECCIONALES" /> SECCIONALES</label>
             <label><input type="checkbox" id="chkENTEMETROPOLITANO" /> ENTE METROPOLITANO</label>
+            <label><input type="checkbox" id="chkAP" /> AREAS PROGRAMÁTICAS</label>
             </div>
         </div>
 
@@ -507,7 +509,9 @@
                 if (layerName === 'DEPARTAMENTOS' && props.hasOwnProperty('nombre_departamento')) { // Ejemplo
                     return props.nombre_departamento;
                 }
-
+                if (layerName === 'AP' && props.hasOwnProperty('id_area')) {
+                    return props.id_area;
+                }
 
                 // Prioridad genérica (si no se especifica una propiedad para la capa)
                 if (props.name) return props.name;
@@ -693,7 +697,8 @@
                 'SECCIONALES',
                 'DEPARTAMENTOS',
                 'LOCALIDADES',
-                'ENTEMETROPOLITANO'
+                'ENTEMETROPOLITANO',
+                'AP'
             ];
             const urlBase ="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/";
 
@@ -856,6 +861,8 @@
                 toggleLayer('DEPARTAMENTOS', e.target.checked);
             document.getElementById('chkLOCALIDADES').onchange = (e) =>
                 toggleLayer('LOCALIDADES', e.target.checked);
+            document.getElementById('chkAP').onchange = (e) =>
+                toggleLayer('AP', e.target.checked);
 
             function toggleLayer(nombre, visible) {
                 if (!capas[nombre]) {
@@ -1156,7 +1163,8 @@
                     const hogaresNBIFormatted = datos.hogares_nbi?.toLocaleString('es-AR') || '0';
                     const porcentajeSinCoberturaFormatted = 
                         datos.porcentaje_sin_cobertura !== undefined && datos.porcentaje_sin_cobertura !== null
-                            ? datos.porcentaje_sin_cobertura : '0%';
+                            ? datos.porcentaje_sin_cobertura 
+                            : '0%';
 
                     return `
                         <div style="font-family: sans-serif; min-width: 240px;">
