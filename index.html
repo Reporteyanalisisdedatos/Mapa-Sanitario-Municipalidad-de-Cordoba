@@ -429,6 +429,19 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+    function normalizar(texto) {
+        if (!texto) return "";
+        return texto
+            .toString()
+            .normalize("NFD")              // separa acentos
+            .replace(/[\u0300-\u036f]/g, "") // elimina acentos
+            .toUpperCase()
+            .trim();
+    }
+    </script>
+    
+    <script>
+
         let efectoresData = null;
         let capaEfectores = null;
         const capas = {}; // Objeto para almacenar las capas de GeoJSON (la geometría)
@@ -1302,6 +1315,7 @@
 
 </body>
 </html>
+
 
 
 
