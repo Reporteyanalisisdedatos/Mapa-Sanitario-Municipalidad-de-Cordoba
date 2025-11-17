@@ -1,0 +1,74 @@
+[
+  {
+    "Zona": 0,
+    "PoblacionTotal": 156000,
+    "Mujeres": 85390,
+    "Varones": 70610,
+    "Hogares": 85191,
+    "HogaresNBI": 2200,
+    "PoblacionSinCobertura": 30922
+  },
+  {
+    "Zona": 1,
+    "PoblacionTotal": 208639,
+    "Mujeres": 108876,
+    "Varones": 99763,
+    "Hogares": 70967,
+    "HogaresNBI": 3165,
+    "PoblacionSinCobertura": 74027
+  },
+  {
+    "Zona": 2,
+    "PoblacionTotal": 168528,
+    "Mujeres": 87659,
+    "Varones": 80869,
+    "Hogares": 58001,
+    "HogaresNBI": 3102,
+    "PoblacionSinCobertura": 65255
+  },
+  {
+    "Zona": 3,
+    "PoblacionTotal": 180753,
+    "Mujeres": 94087,
+    "Varones": 86666,
+    "Hogares": 59657,
+    "HogaresNBI": 2994,
+    "PoblacionSinCobertura": 61170
+  },
+  {
+    "Zona": 4,
+    "PoblacionTotal": 233209,
+    "Mujeres": 122312,
+    "Varones": 110897,
+    "Hogares": 90608,
+    "HogaresNBI": 4090,
+    "PoblacionSinCobertura": 77987
+  },
+  {
+    "Zona": 5,
+    "PoblacionTotal": 281914,
+    "Mujeres": 147641,
+    "Varones": 134273,
+    "Hogares": 99355,
+    "HogaresNBI": 4316,
+    "PoblacionSinCobertura": 84500
+  },
+  {
+    "Zona": 6,
+    "PoblacionTotal": 213194,
+    "Mujeres": 111067,
+    "Varones": 102127,
+    "Hogares": 73423,
+    "HogaresNBI": 2981,
+    "PoblacionSinCobertura": 64347
+  },
+  {
+    "Zona": 7,
+    "PoblacionTotal": 56586,
+    "Mujeres": 28938,
+    "Varones": 27648,
+    "Hogares": 16268,
+    "HogaresNBI": 1626,
+    "PoblacionSinCobertura": 31738
+  }
+]
