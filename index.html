@@ -817,7 +817,7 @@
                                     const centroid = getCentroid(multiFeature);
                                     if (!centroid) return;
 
-                                    const labelHtml = `<div class="layer-label">Seccional ${id}</div>`;
+                                    const labelHtml = `<div class="layer-label">${id}</div>`;
                                     const customIcon = L.divIcon({
                                         className: 'custom-div-icon',
                                         html: labelHtml,
@@ -1409,8 +1409,3 @@
 
 </body>
 </html>
-
-
-
-
-
