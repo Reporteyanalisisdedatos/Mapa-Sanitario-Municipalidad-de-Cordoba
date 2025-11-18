@@ -491,13 +491,33 @@
                 attribution: '&copy; OpenStreetMap contributors',
             }).addTo(map);
 
-            const estilos = (feature) => ({
-                color: feature.properties.stroke || '#3388ff',
-                weight: feature.properties['stroke-width'] || 2,
-                opacity: feature.properties['stroke-opacity'] || 1,
-                fillColor: feature.properties.fill || '#3388ff',
-                fillOpacity: feature.properties['fill-opacity'] || 0.3,
-            });
+            /* ============================
+            🎨 ESTILOS POR CAPA
+            ============================ */
+            const estilos = (feature, layerName = "") => {
+
+                // 🌈 Si es SECCIONALES → color por número
+                if (layerName === "SECCIONALES") {
+                    const id = feature.properties?.seccional || "";
+                    return {
+                        color: colorPorSeccional(id),
+                        weight: 2,
+                        opacity: 1,
+                        fillColor: colorPorSeccional(id),
+                        fillOpacity: 0.25
+                    };
+                }
+
+                // 🔵 Si no, estilo por defecto
+                return {
+                    color: feature.properties.stroke || '#3388ff',
+                    weight: feature.properties['stroke-width'] || 2,
+                    opacity: feature.properties['stroke-opacity'] || 1,
+                    fillColor: feature.properties.fill || '#3388ff',
+                    fillOpacity: feature.properties['fill-opacity'] || 0.3,
+                };
+            };
+
 
             // Función para obtener el nombre de la feature (para etiquetas y popups)
             function getFeatureName(props, layerName) {
@@ -720,6 +740,28 @@
                     }
                 });
 
+                const coloresSeccionales = {
+                    "01": "#FF5733",
+                    "02": "#33B5FF",
+                    "03": "#FF33D1",
+                    "04": "#7DFF33",
+                    "05": "#FF8F33",
+                    "06": "#3375FF",
+                    "07": "#FF3333",
+                    "08": "#33FFEC",
+                    "09": "#DA33FF",
+                    "10": "#33FF57",
+                    "11": "#FFC133",
+                    "12": "#33FFF6",
+                    "13": "#A633FF",
+                    "14": "#33FF8A",
+                    "15": "#FF334E"
+                };
+
+                function colorPorSeccional(id) {
+                    return coloresSeccionales[id] || "#999999";
+                }
+
             const archivosCapas = {
                 CIRCUITO: "CIRCUITO_SECCIONALES.json",
                 SECCIONALES: "CIRCUITO_SECCIONALES.json",
@@ -743,7 +785,7 @@
                     .then((geojson) => {
                         // Capa de geometría
                         capas[nombre] = L.geoJSON(geojson, {
-                            style: estilos,
+                            style: (feature) => estilos(feature, nombre),
                             onEachFeature: (feature, layer) => {
                                 const nom = getFeatureName(feature.properties, nombre);
                                 layer.bindPopup(`<strong>${nom}</strong>`);
@@ -1330,3 +1372,4 @@
 
 </body>
 </html>
+
