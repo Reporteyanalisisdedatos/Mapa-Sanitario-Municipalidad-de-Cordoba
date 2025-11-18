@@ -506,14 +506,14 @@
                 if (layerName === 'BARRIOS' && props.hasOwnProperty('nombre_propiedad_real_barrio')) { 
                     return props.nombre_propiedad_real_barrio;
                 }
-                if (layerName === 'CIRCUITO' && props.hasOwnProperty('circuito')) { 
-                    return props.circuito;
+                if (layerName === 'CIRCUITO' && props.circuito) {
+                    return `Circuito ${props.circuito}`;
                 }
                 if (layerName === 'LOCALIDADES' && props.hasOwnProperty('nombre_propiedad_real_localidad')) { 
                     return props.nombre_propiedad_real_localidad;
                 }
-                if (layerName === 'SECCIONALES' && props.hasOwnProperty('nombre_seccional')) { // Ejemplo, si seccionales tiene una propiedad diferente
-                    return props.nombre_seccional;
+                if (layerName === 'SECCIONALES' && props.seccional) {
+                    return `Seccional ${props.seccional}`;
                 }
                 if (layerName === 'ENTEMETROPOLITANO' && props.hasOwnProperty('localidad')) {
                     return props.localidad;
@@ -720,40 +720,41 @@
                     }
                 });
 
-            const archivosCapas = [
-                'CIRCUITO',
-                'SECCIONALES',
-                'DEPARTAMENTOS',
-                'LOCALIDADES',
-                'ENTEMETROPOLITANO',
-                'AP'
-            ];
+            const archivosCapas = {
+                CIRCUITO: "CIRCUITO_SECCIONALES.json",
+                SECCIONALES: "CIRCUITO_SECCIONALES.json",
+                DEPARTAMENTOS: "DEPARTAMENTOS.json",
+                LOCALIDADES: "LOCALIDADES.json",
+                ENTEMETROPOLITANO: "ENTEMETROPOLITANO.json",
+                AP: "AP.json"
+            };
             const urlBase ="https://reporteyanalisisdedatos.github.io/Mapa-Sanitario-Municipalidad-de-Cordoba/";
 
-            archivosCapas.forEach((nombre) => {
-                fetch(`${urlBase}${nombre}.json`)
+            for (const nombre in archivosCapas) {
+                const archivo = archivosCapas[nombre];
+
+                fetch(`${urlBase}${archivo}`)
                     .then((res) => {
                         if (!res.ok) {
-                            throw new Error(`HTTP error! status: ${res.status} for ${nombre}.json`);
+                            throw new Error(`HTTP error! status: ${res.status} para ${archivo}`);
                         }
                         return res.json();
                     })
                     .then((geojson) => {
+                        // Capa de geometría
                         capas[nombre] = L.geoJSON(geojson, {
                             style: estilos,
                             onEachFeature: (feature, layer) => {
-                                // Usar getFeatureName con el nombre de la capa
                                 const nom = getFeatureName(feature.properties, nombre);
                                 layer.bindPopup(`<strong>${nom}</strong>`);
                             },
                         });
 
-                        // Crear y almacenar los marcadores de etiqueta para esta capa
+                        // Capa de etiquetas
                         const labelsGroup = L.layerGroup();
                         geojson.features.forEach(feature => {
                             const centroid = getCentroid(feature);
                             if (centroid) {
-                                // Usar getFeatureName con el nombre de la capa
                                 const name = getFeatureName(feature.properties, nombre);
                                 if (name && name !== 'Sin nombre') { 
                                     const labelHtml = `<div class="layer-label">${name}</div>`;
@@ -769,13 +770,12 @@
                             }
                         });
                         capasLabels[nombre] = labelsGroup;
-
                     })
                     .catch((error) => {
-                        console.error(`Error cargando ${nombre}.json:`, error);
-                        console.log(`Asegúrate de que ${nombre}.json exista, sea un GeoJSON válido y tenga una propiedad de nombre legible.`);
+                        console.error(`Error cargando ${archivo}:`, error);
                     });
-            });
+            }
+
 
             function poblarSelectorZonas(zonasFeatures) {
                 // Ordenar las zonas numéricamente
@@ -1330,8 +1330,3 @@
 
 </body>
 </html>
-
-
-
-
-
