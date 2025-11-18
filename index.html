@@ -1281,17 +1281,31 @@
                 }
 
                 allZonesList.innerHTML = '';
+
+                // 🔹 1) EXCLUIR ZONA 7 SOLO DEL LISTADO
+                const zonasSin7 = datosZonasPoblacion.filter(z => String(z.Zona) !== '7');
+
+                // 🔹 2) CALCULAR TOTAL DE CAPITAL INCLUYENDO TODAS LAS ZONAS (incluye ZONA 7)
+                const totalCapital = datosZonasPoblacion.reduce(
+                    (acc, z) => acc + (z.PoblacionTotal || 0),
+                    0
+                );
+
+                // 🔹 3) ACTUALIZAR EL TÍTULO DEL PANEL CON EL TOTAL CORRECTO
                 const panelHeader = allZonesSummaryPanel.querySelector('h3');
                 panelHeader.innerHTML = `
                     Población por Zona<br>
                     <span style="font-size: 13px; font-weight: normal; color: #444;">
-                        Población Total de Capital: 1.505.099
+                        Población Total de Capital: ${totalCapital.toLocaleString('es-AR')}
                     </span>
                 `;
 
                 totalCapitalPopulationDiv.style.display = 'none';
 
-                const zonasOrdenadas = [...datosZonasPoblacion].sort((a, b) => parseInt(a.Zona) - parseInt(b.Zona));
+                // 🔹 4) ORDENAR Y LISTAR SOLO ZONAS ≠ 7
+                const zonasOrdenadas = [...zonasSin7].sort(
+                    (a, b) => parseInt(a.Zona) - parseInt(b.Zona)
+                );
 
                 zonasOrdenadas.forEach(z => {
                     const id = z.Zona;
@@ -1309,12 +1323,14 @@
                 zonaInfoPanel.style.display = 'none';
                 allZonesSummaryPanel.style.display = 'flex';
             }
+
     
         });
     </script>
 
 </body>
 </html>
+
 
 
 
