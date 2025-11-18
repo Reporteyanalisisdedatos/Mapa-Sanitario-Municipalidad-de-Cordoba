@@ -741,21 +741,21 @@
                 });
 
                 const coloresSeccionales = {
-                    "01": "#FF5733",
-                    "02": "#33B5FF",
-                    "03": "#FF33D1",
-                    "04": "#7DFF33",
-                    "05": "#FF8F33",
-                    "06": "#3375FF",
-                    "07": "#FF3333",
-                    "08": "#33FFEC",
-                    "09": "#DA33FF",
-                    "10": "#33FF57",
-                    "11": "#FFC133",
-                    "12": "#33FFF6",
-                    "13": "#A633FF",
-                    "14": "#33FF8A",
-                    "15": "#FF334E"
+                    "01": "#FFB3BA",  // rosa pastel
+                    "02": "#FFDFBA",  // durazno pastel
+                    "03": "#FFFFBA",  // amarillo pastel
+                    "04": "#BAFFC9",  // verde pastel
+                    "05": "#BAE1FF",  // celeste pastel
+                    "06": "#E5C1FF",  // violeta pastel
+                    "07": "#FFD6E0",  // rosa claro
+                    "08": "#D1F7FF",  // celeste muy suave
+                    "09": "#FFF0C2",  // amarillo crema
+                    "10": "#C5FFD7",  // verde agua pastel
+                    "11": "#D9D4FF",  // lavanda pastel
+                    "12": "#FFE1C6",  // durazno claro
+                    "13": "#E2FFCC",  // verde limón claro
+                    "14": "#FFCCE5",  // rosado suave
+                    "15": "#CCE5FF"   // azul suave
                 };
 
                 function colorPorSeccional(id) {
@@ -794,24 +794,59 @@
 
                         // Capa de etiquetas
                         const labelsGroup = L.layerGroup();
-                        geojson.features.forEach(feature => {
-                            const centroid = getCentroid(feature);
-                            if (centroid) {
-                                const name = getFeatureName(feature.properties, nombre);
-                                if (name && name !== 'Sin nombre') { 
-                                    const labelHtml = `<div class="layer-label">${name}</div>`;
+
+                            if (nombre === "SECCIONALES") {
+                                // Agrupar features por ID de seccional
+                                const grupos = {};
+                                geojson.features.forEach(f => {
+                                    const id = f.properties?.seccional;
+                                    if (!id) return;
+                                    if (!grupos[id]) grupos[id] = [];
+                                    grupos[id].push(f);
+                                });
+
+                                // Crear SOLO una etiqueta por seccional
+                                Object.entries(grupos).forEach(([id, features]) => {
+                                    // Calculamos centroide combinado → todos los trozos de esa seccional
+                                    const multiFeature = {
+                                        type: "FeatureCollection",
+                                        features: features
+                                    };
+                                    const centroid = getCentroid(multiFeature);
+                                    if (!centroid) return;
+
+                                    const labelHtml = `<div class="layer-label">Seccional ${id}</div>`;
                                     const customIcon = L.divIcon({
                                         className: 'custom-div-icon',
                                         html: labelHtml,
-                                        iconSize: [0, 0], 
+                                        iconSize: [0, 0],
                                         iconAnchor: [0, 0]
                                     });
-                                    const labelMarker = L.marker(centroid, { icon: customIcon });
-                                    labelsGroup.addLayer(labelMarker);
-                                }
+
+                                    labelsGroup.addLayer(L.marker(centroid, { icon: customIcon }));
+                                });
+
+                            } else {
+                                // Para el resto de capas sigue igual
+                                geojson.features.forEach(feature => {
+                                    const centroid = getCentroid(feature);
+                                    if (centroid) {
+                                        const name = getFeatureName(feature.properties, nombre);
+                                        if (name && name !== 'Sin nombre') { 
+                                            const labelHtml = `<div class="layer-label">${name}</div>`;
+                                            const customIcon = L.divIcon({
+                                                className: 'custom-div-icon',
+                                                html: labelHtml,
+                                                iconSize: [0, 0], 
+                                                iconAnchor: [0, 0]
+                                            });
+                                            labelsGroup.addLayer(L.marker(centroid, { icon: customIcon }));
+                                        }
+                                    }
+                                });
                             }
-                        });
-                        capasLabels[nombre] = labelsGroup;
+
+                            capasLabels[nombre] = labelsGroup;
                     })
                     .catch((error) => {
                         console.error(`Error cargando ${archivo}:`, error);
@@ -1372,4 +1407,3 @@
 
 </body>
 </html>
-
