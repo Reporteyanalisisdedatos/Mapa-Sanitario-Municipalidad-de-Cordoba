@@ -508,6 +508,18 @@
                     };
                 }
 
+                // 🎨 Si es CIRCUITO → mismo color que su SECCIONAL
+                if (layerName === "CIRCUITO") {
+                    const secc = feature.properties?.seccional || "";
+                    return {
+                        color: colorPorSeccional(secc),
+                        weight: 1.5,        // un poco más finito que la seccional
+                        opacity: 0.9,
+                        fillColor: colorPorSeccional(secc),
+                        fillOpacity: 0.12   // más suave para no tapar nada
+                    };
+                }
+
                 // 🔵 Si no, estilo por defecto
                 return {
                     color: feature.properties.stroke || '#3388ff',
@@ -519,6 +531,7 @@
             };
 
 
+
             // Función para obtener el nombre de la feature (para etiquetas y popups)
             function getFeatureName(props, layerName) {
                 // *** POR FAVOR, REEMPLAZA 'nombre_propiedad_real' CON EL NOMBRE DE LA PROPIEDAD EN TUS JSONS ***
@@ -527,7 +540,8 @@
                     return props.nombre_propiedad_real_barrio;
                 }
                 if (layerName === 'CIRCUITO' && props.circuito) {
-                    return `Circuito ${props.circuito}`;
+                    // Solo el código del circuito, sin la palabra "Circuito"
+                    return `${props.circuito}`;
                 }
                 if (layerName === 'LOCALIDADES' && props.hasOwnProperty('nombre_propiedad_real_localidad')) { 
                     return props.nombre_propiedad_real_localidad;
@@ -1405,4 +1419,3 @@
 
 </body>
 </html>
-
