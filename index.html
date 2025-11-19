@@ -561,20 +561,16 @@
             }
 
             // Función para calcular el centroide del bounding box de un polígono/multipolígono (más simple)
-            function getCentroid(feature) {
-                if (feature.geometry && feature.geometry.coordinates) {
-                    try {
-                        const geoJsonLayer = L.geoJSON(feature);
-                        if (geoJsonLayer.getBounds().isValid()) {
-                            return geoJsonLayer.getBounds().getCenter();
-                        } else {
-                            console.warn("Bounds inválidos para la feature, no se pudo calcular el centroide:", feature);
-                            return null;
-                        }
-                    } catch (e) {
-                        console.error("Error al calcular el centroide para la feature:", feature, e);
-                        return null;
+            function getCentroid(featureOrCollection) {
+                try {
+                    const geoJsonLayer = L.geoJSON(featureOrCollection);
+                    const bounds = geoJsonLayer.getBounds();
+
+                    if (bounds && bounds.isValid()) {
+                        return bounds.getCenter();
                     }
+                } catch (e) {
+                    console.error("Error calculando centroide combinado:", e);
                 }
                 return null;
             }
@@ -1409,14 +1405,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
